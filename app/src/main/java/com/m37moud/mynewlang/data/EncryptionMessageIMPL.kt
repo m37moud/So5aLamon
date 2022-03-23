@@ -1,3 +1,5 @@
+package com.m37moud.mynewlang.data
+
 class EncryptionMessageIMPL {
     private val char = "س"
     private val wordList = mutableListOf<String>()

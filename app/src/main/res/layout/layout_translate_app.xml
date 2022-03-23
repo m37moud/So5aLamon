@@ -32,7 +32,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/gnt_ad_green"
+            app:strokeColor="@color/blue"
             app:strokeWidth="3dp">
 
             <FrameLayout
@@ -41,7 +41,11 @@
                 android:layout_gravity="center">
 
                 <TextView
-                    android:id="@+id/original_txt"
+                    android:id="@+id/encrypt_txt"
+                    android:text="test bs"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:textSize="@dimen/_20sdp"
+                    android:textColor="@color/black"
                     android:layout_width="@dimen/_250sdp"
                     android:layout_height="@dimen/_150sdp" />
 
@@ -65,7 +69,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_container_controller"
-            app:strokeColor="@color/gnt_ad_green"
+            app:strokeColor="@color/blue"
             app:strokeWidth="3dp">
 
             <FrameLayout
@@ -75,6 +79,10 @@
 
                 <TextView
                     android:id="@+id/translated_txt"
+                    android:text="test bs"
+                    android:textSize="@dimen/_20sdp"
+                    android:textColor="@color/black"
+                    android:layout_margin="@dimen/_8sdp"
                     android:layout_width="@dimen/_250sdp"
                     android:layout_height="@dimen/_150sdp" />
 
@@ -97,7 +105,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_container_share"
-            app:strokeColor="@color/gnt_ad_green"
+            app:strokeColor="@color/blue"
             app:strokeWidth="3dp">
 
             <LinearLayout

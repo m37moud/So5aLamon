@@ -2,7 +2,6 @@ package com.m37moud.mynewlang
 
 import android.R
 import android.app.*
-import android.app.Notification.EXTRA_NOTIFICATION_ID
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -14,17 +13,18 @@ import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.m37moud.mynewlang.ui.Translate
+import com.m37moud.mynewlang.util.Constants
+import com.m37moud.mynewlang.util.Constants.Companion.ACTION_ENCRYPT
+import com.m37moud.mynewlang.util.Constants.Companion.ACTION_TRANSLATE
+import com.m37moud.mynewlang.util.Constants.Companion.ENCRYPRAT_TXT
+import com.m37moud.mynewlang.util.Constants.Companion.ORIGINAL_TXT
 import com.m37moud.responsivestories.util.Logger
-import kotlin.random.Random
 
 private const val TAG = "ClipboardService"
 
 class ClipboardService : Service() {
-    private val ACTION_TRANSLATE = "translate"
-    private val ACTION_ENCRYPT = "encrypt"
-    private val ORIGINAL_TXT = "originalTxt"
 
 
     private var txt = ""
@@ -32,11 +32,14 @@ class ClipboardService : Service() {
     private var mClipboardManager: ClipboardManager? = null
     private val mOnPrimaryClipChangedListener: ClipboardManager.OnPrimaryClipChangedListener =
         ClipboardManager.OnPrimaryClipChangedListener {
+            NotificationManagerCompat.from(applicationContext).cancel(1001)
+
             Logger.d(TAG, "onPrimaryClipChanged")
             val clip: ClipData = mClipboardManager!!.primaryClip!!
-             txt = (clip.getItemAt(0).text).toString()
-            Toast.makeText(applicationContext, " text clip inserted:: ${txt}", Toast.LENGTH_LONG)
-                .show()
+            txt = (clip.getItemAt(0).text).toString()
+//            Toast.makeText(applicationContext, " text clip inserted:: ${txt}", Toast.LENGTH_LONG).show()
+
+
             showNotification(applicationContext)
             Logger.d(TAG, "new text clip inserted: " + txt.toString())
             //                mThreadPool.execute(
@@ -78,7 +81,7 @@ class ClipboardService : Service() {
         val channelId: String = createExoDownloadNotificationChannel(context)!!
 //        val notificationID = Random.nextInt()
 
-        val translate = Intent(this, Translate::class.java).apply {
+        val translate = Intent(this, NotifyBroadcast::class.java).apply {
             action = ACTION_TRANSLATE
 //            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 //            putExtra(EXTRA_NOTIFICATION_ID, notificationID)
@@ -86,10 +89,12 @@ class ClipboardService : Service() {
 
         }
         val translateIntent: PendingIntent =
-            PendingIntent.getActivity(this, 0, translate, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(this, 0, translate, PendingIntent.FLAG_UPDATE_CURRENT)
         //**************************************************
         val encrypte = Intent(this, NotifyBroadcast::class.java).apply {
             action = ACTION_ENCRYPT
+            putExtra(ORIGINAL_TXT, txt)
+
 //            putExtra(EXTRA_NOTIFICATION_ID, notificationID)
 
         }
