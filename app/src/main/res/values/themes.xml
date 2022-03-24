@@ -25,4 +25,23 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="NoDisplay">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowNoDisplay">true</item>
+    </style>
+    <style name="text_views">
+        <item name="android:shadowColor">@color/blue</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowRadius">3</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/darkGray</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textDirection">locale</item>
+    </style>
+
 </resources>

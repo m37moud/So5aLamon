@@ -43,9 +43,8 @@
                 <TextView
                     android:id="@+id/encrypt_txt"
                     android:text="test bs"
+                    style="@style/text_views"
                     android:layout_margin="@dimen/_8sdp"
-                    android:textSize="@dimen/_20sdp"
-                    android:textColor="@color/black"
                     android:layout_width="@dimen/_250sdp"
                     android:layout_height="@dimen/_150sdp" />
 
@@ -80,8 +79,7 @@
                 <TextView
                     android:id="@+id/translated_txt"
                     android:text="test bs"
-                    android:textSize="@dimen/_20sdp"
-                    android:textColor="@color/black"
+                    style="@style/text_views"
                     android:layout_margin="@dimen/_8sdp"
                     android:layout_width="@dimen/_250sdp"
                     android:layout_height="@dimen/_150sdp" />

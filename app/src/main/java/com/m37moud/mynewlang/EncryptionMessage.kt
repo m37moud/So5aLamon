@@ -22,7 +22,7 @@ class EncryptionMessage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 //        NotificationManagerCompat.from(this).cancel(1001)
 
-        setContentView(R.layout.activity_encryption_message)
+//        setContentView(R.layout.activity_encryption_message)
 
 		encryption = EncryptionMessageIMPL()
 

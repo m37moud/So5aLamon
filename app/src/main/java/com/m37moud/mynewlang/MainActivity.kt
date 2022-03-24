@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.m37moud.responsivestories.util.Logger
+import kotlinx.android.synthetic.main.activity_main.*
 
 private const val TAG = "MainActivity"
 
@@ -17,6 +18,11 @@ class MainActivity : AppCompatActivity() {
         startService(
             Intent(this@MainActivity, ClipboardService::class.java)
         )
+        launch_btn.setOnClickListener {
+            startService(
+                Intent(this@MainActivity, ClipboardService::class.java)
+            )
+        }
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //           startForegroundService(Intent(this, ClipboardService::class.java))
 //        } else {
