@@ -14,7 +14,7 @@
         android:label="سغة لمون"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyNewLang">
+        android:theme="@style/SplashScreenStyle">
         <activity
             android:name=".ui.Translate"
             android:excludeFromRecents="true"

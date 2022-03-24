@@ -12,16 +12,18 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_main)
         Logger.d(TAG, "onCreate service start")
 //
-        startService(
-            Intent(this@MainActivity, ClipboardService::class.java)
-        )
+//        startForegroundService(
+//            Intent(this@MainActivity, ClipboardService::class.java)
+//        )
         launch_btn.setOnClickListener {
             startService(
                 Intent(this@MainActivity, ClipboardService::class.java)
             )
+            finish()
         }
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //           startForegroundService(Intent(this, ClipboardService::class.java))

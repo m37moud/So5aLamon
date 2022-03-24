@@ -22,8 +22,8 @@
         app:strokeColor="@color/strokeColor"
         app:strokeWidth="1dp">
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@drawable/start_background"
 
             >
@@ -52,8 +52,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/imageView2"
                 app:layout_constraintStart_toStartOf="@+id/imageView2"
                 app:layout_constraintTop_toBottomOf="@+id/imageView2"
-                app:strokeColor="@color/blue"
-                app:strokeWidth="3dp">
+                app:strokeColor="@color/orange"
+                app:strokeWidth="@dimen/_4sdp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                         android:layout_margin="@dimen/_8sdp"
                         style="@style/text_views"
                         android:gravity="center_horizontal|center_vertical"
-                        android:text="برنامج سغة لمون سريبة غراب"
+                        android:text="سغة لمون سريبة غراب"
                         android:textSize="@dimen/_20sdp" />
 
                 </FrameLayout>
@@ -79,6 +79,9 @@
                 android:layout_height="@dimen/_100sdp"
                 android:layout_marginBottom="32dp"
                 android:text="ابدا"
+                android:scaleType="centerCrop"
+                app:backgroundTint="@color/darkorange"
+                app:backgroundTintMode="screen"
                 android:background="@drawable/button_rounded"
                 android:foreground="@drawable/btn_foreground"
                 android:backgroundTint="@color/orange"
