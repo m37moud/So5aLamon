@@ -1,98 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mediumGray"
-
+    android:background="@color/yellow"
+    android:orientation="vertical"
     tools:context=".MainActivity">
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/_5sdp"
+        android:elevation="@dimen/_10sdp"
         app:cardCornerRadius="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/white"
+        app:strokeWidth="@dimen/_1sdp">
 
-        app:strokeColor="@color/strokeColor"
-        app:strokeWidth="1dp">
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:background="@drawable/start_background"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            >
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="@dimen/_150sdp"
-                android:layout_height="@dimen/_150sdp"
-
-                android:layout_marginTop="32dp"
-                android:src="@drawable/ic_happy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/setting_container_controller"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:layout_margin="@dimen/_8sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_80sdp"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:ignore="HardcodedText"
 
-                android:backgroundTint="@color/lightGray"
-                app:cardCornerRadius="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/launch_btn"
-                app:layout_constraintEnd_toEndOf="@+id/imageView2"
-                app:layout_constraintStart_toStartOf="@+id/imageView2"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2"
-                app:strokeColor="@color/orange"
-                app:strokeWidth="@dimen/_4sdp">
+                >
 
-                <FrameLayout
+                <TextView
+                    android:id="@+id/txt_v1"
+                    style="@style/text_views"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:alpha="0"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="برنامج"
+                    android:textSize="@dimen/_30ssp"
+                    tools:alpha="1" />
 
-                    <TextView
-                        android:id="@+id/encrypt_txt"
-                        android:layout_width="@dimen/_250sdp"
-                        android:layout_height="@dimen/_150sdp"
-                        android:layout_margin="@dimen/_8sdp"
-                        style="@style/text_views"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:text="سغة لمون سريبة غراب"
-                        android:textSize="@dimen/_20sdp" />
+                <TextView
+                    android:id="@+id/txt_v2"
+                    style="@style/text_views"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:alpha="0"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="سغة لمون سريبة غراب"
+                    android:textSize="@dimen/_20ssp"
+                    android:textStyle="normal"
+                    tools:alpha="1" />
 
-                </FrameLayout>
+                <Button
+                    android:id="@+id/launch_btn"
+                    android:layout_width="@dimen/_90sdp"
+                    android:layout_height="@dimen/_90sdp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    android:background="@drawable/button_rounded"
+                    android:backgroundTint="@color/orange"
+                    android:foreground="@drawable/btn_foreground"
+                    android:scaleType="centerCrop"
+                    android:scaleX="0"
+                    android:scaleY="0"
+                    android:text="ابدا"
+                    app:backgroundTint="@color/darkorange"
+                    app:backgroundTintMode="screen" />
+            </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
-            <Button
-                android:id="@+id/launch_btn"
-                android:layout_width="@dimen/_100sdp"
-                android:layout_height="@dimen/_100sdp"
-                android:layout_marginBottom="32dp"
-                android:text="ابدا"
-                android:scaleType="centerCrop"
-                app:backgroundTint="@color/darkorange"
-                app:backgroundTintMode="screen"
-                android:background="@drawable/button_rounded"
-                android:foreground="@drawable/btn_foreground"
-                android:backgroundTint="@color/orange"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-</com.google.android.material.card.MaterialCardView>
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="@dimen/_130sdp"
+                android:layout_height="@dimen/_130sdp"
+                android:layout_gravity="center"
+                app:tint="@color/darkorange"
+                android:src="@drawable/ic_happy" />
 
 
+        </FrameLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+</LinearLayout>
