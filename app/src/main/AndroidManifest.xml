@@ -12,6 +12,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="سغة لمون"
+        android:hardwareAccelerated="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/SplashScreenStyle">
@@ -65,6 +66,17 @@
                 <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
             </intent-filter>
         </receiver>
+
+
+
+        <meta-data
+
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+        <!-- original AdMob app ID: ca-app-pub-9331212887639574~2078263925 -->
+
     </application>
 
 </manifest>

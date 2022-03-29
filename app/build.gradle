@@ -66,6 +66,12 @@ dependencies {
     implementation 'com.github.skydoves:elasticviews:2.1.0'
 
 
-//    implementation "androidx.core:core-splashscreen:1.0.0-alpha02"
+//    implementation "androidx.core:core-splashscreen:1.0.0-beta02"
 
+
+    //google ads
+    implementation 'com.google.android.gms:play-services-ads:20.4.0'
+
+    //lottieFiles
+    implementation 'com.airbnb.android:lottie:3.4.0'
 }
