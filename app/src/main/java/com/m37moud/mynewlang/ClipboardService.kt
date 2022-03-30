@@ -11,6 +11,7 @@ import android.media.RingtoneManager.TYPE_NOTIFICATION
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
+import android.os.SystemClock
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -67,10 +68,25 @@ class ClipboardService : Service() {
             mClipboardManager!!.removePrimaryClipChangedListener(mOnPrimaryClipChangedListener)
 
         }
+        NotificationManagerCompat.from(applicationContext).cancel(1001)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return START_STICKY
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        val restartServiceIntent = Intent(applicationContext, this::class.java)
+        restartServiceIntent.setPackage(packageName)
+        val restartServicePendingIntent = PendingIntent.getService(applicationContext,1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT)
+
+        val alarmService = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        alarmService.set(
+            AlarmManager.ELAPSED_REALTIME,
+            SystemClock.elapsedRealtime() + 1000,
+            restartServicePendingIntent)
+        super.onTaskRemoved(rootIntent)
     }
 
     private fun showNotification(context: Context) {
@@ -106,7 +122,7 @@ class ClipboardService : Service() {
         val notification: Notification =
             NotificationCompat.Builder(context, channelId)
                 .setAutoCancel(true)
-                .setColor(ContextCompat.getColor(context, R.color.holo_blue_bright))
+                .setColor(ContextCompat.getColor(context, R.color.holo_orange_dark))
                 .setContentTitle("Sa5a Lamon")
                 .setContentText("select action")
                 .setOnlyAlertOnce(true)

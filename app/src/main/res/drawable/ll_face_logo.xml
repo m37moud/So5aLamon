@@ -3,9 +3,7 @@
     android:opacity="opaque">
 
     <item android:drawable="@drawable/start_background" />
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/ic_girl" />
-    </item>
+    <item
+        android:gravity="center"
+        android:src="@drawable/ic_happy" />
 </layer-list>

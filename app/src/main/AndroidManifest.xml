@@ -48,7 +48,10 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".ClipboardService" />
+        <service android:name=".ClipboardService"
+            android:process=":MyService"
+            android:enabled="true"
+            />
 
         <receiver android:name=".CopyBroadcast">
             <intent-filter>
