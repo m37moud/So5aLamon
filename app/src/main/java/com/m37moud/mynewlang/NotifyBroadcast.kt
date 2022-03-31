@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import com.m37moud.mynewlang.ui.Translate
 import com.m37moud.mynewlang.util.Constants
-import com.m37moud.responsivestories.util.Logger
+import com.m37moud.mynewlang.util.Logger
 
 
 

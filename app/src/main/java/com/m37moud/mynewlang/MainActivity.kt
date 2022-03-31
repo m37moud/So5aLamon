@@ -3,6 +3,7 @@ package com.m37moud.mynewlang
 import android.animation.Animator
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -20,7 +21,7 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.m37moud.mynewlang.util.Constants.Companion.AD_BANNER_ID
 import com.m37moud.mynewlang.util.Constants.Companion.AD_InterstitialAd_ID
 import com.m37moud.mynewlang.util.Constants.Companion.AD_REWARDEDED_ID
-import com.m37moud.responsivestories.util.Logger
+import com.m37moud.mynewlang.util.Logger
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -495,10 +496,31 @@ class MainActivity : AppCompatActivity() {
     private fun startMyService() {
         Logger.d(TAG, "(startMyService) called.")
 
-        startService(
-            Intent(this@MainActivity, ClipboardService::class.java)
-        )
+//        startService(
+//            Intent(this@MainActivity, ClipboardService::class.java)
+//        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+           startForegroundService(Intent(this, ClipboardService::class.java))
+        } else {
+           startService(Intent(this, ClipboardService::class.java))
+        }
         finish()
+
+
+//        Intent(this, ClipboardService::class.java).also {
+////            it.action = action.name
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                Logger.d(TAG,"Starting the service in >=26 Mode")
+//                startForegroundService(it)
+//                return
+//            }
+//            Logger.d(TAG,"Starting the service in < 26 Mode")
+//            startService(it)
+//        }
+//        finish()
+
+
     }
 
     private fun choseAdToLoad(rewardedShowTime: Int) {

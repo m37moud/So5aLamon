@@ -7,9 +7,8 @@ import com.m37moud.mynewlang.R
 import android.app.AlertDialog
 import android.view.*
 import android.widget.Toast
-import androidx.core.app.NotificationManagerCompat
 import com.m37moud.mynewlang.util.Constants.Companion.ORIGINAL_TXT
-import com.m37moud.responsivestories.util.Logger
+import com.m37moud.mynewlang.util.Logger
 import com.skydoves.elasticviews.ElasticAnimation
 import kotlinx.android.synthetic.main.layout_translate_app.view.*
 
@@ -41,6 +40,14 @@ class Translate : AppCompatActivity() {
 
         }
 
+
+
+/**
+*
+*text.replace("/[\u2190-\u21FF]|[\u2600-\u26FF]|[\u2700-\u27BF]|[\u3000-\u303F]|[\u1F300-\u1F64F]|[\u1F680-\u1F6FF]/g", "")
+*
+*
+*/
 
 
     }

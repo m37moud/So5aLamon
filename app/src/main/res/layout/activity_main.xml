@@ -15,7 +15,7 @@
         android:layout_margin="@dimen/_5sdp"
         android:elevation="@dimen/_10sdp"
         app:cardCornerRadius="10dp"
-        app:strokeColor="@color/white"
+        app:strokeColor="@color/darkorange"
         app:strokeWidth="@dimen/_1sdp">
 
         <FrameLayout

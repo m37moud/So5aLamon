@@ -1,4 +1,5 @@
-package com.m37moud.responsivestories.util
+package com.m37moud.mynewlang.util
+
 import android.util.Log
 object Logger {
     var TAG = "TAG"

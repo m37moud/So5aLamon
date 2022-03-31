@@ -1,10 +1,9 @@
 package com.m37moud.mynewlang
 
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import com.m37moud.responsivestories.util.Logger
+import com.m37moud.mynewlang.util.Logger
 
 private const val TAG = "CopyBroadcast"
 

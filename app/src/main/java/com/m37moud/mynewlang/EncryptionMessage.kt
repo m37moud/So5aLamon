@@ -8,11 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.core.app.NotificationManagerCompat
 import com.google.android.material.snackbar.Snackbar
 import com.m37moud.mynewlang.util.Constants
-import com.m37moud.mynewlang.util.Constants.Companion.ENCRYPRAT_TXT
-import com.m37moud.responsivestories.util.Logger
+import com.m37moud.mynewlang.util.Logger
 private const val TAG = "EncryptionMessage"
 
 class EncryptionMessage : AppCompatActivity() {

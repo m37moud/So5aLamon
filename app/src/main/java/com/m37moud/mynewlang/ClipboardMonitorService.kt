@@ -7,10 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.m37moud.responsivestories.util.Logger
+import com.m37moud.mynewlang.util.Logger
 
 private const val TAG = "ClipboardMonitorService"
 class ClipboardMonitorService : Service() {
