@@ -4,6 +4,9 @@ class Constants {
     companion object {
         const val ACTION_TRANSLATE = "translate"
         const val ACTION_ENCRYPT = "encrypt"
+        const val ACTION_START_OR_RESUME_SERVICE = "ACTION_START_OR_RESUME_SERVICE"
+        const val ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE"
+
         const val ENCRYPRAT_TXT = "encryptTxt"
         const val ORIGINAL_TXT = "originalTxt"
         const val AD_REWARDEDED_ID = "ca-app-pub-3940256099942544/5224354917"

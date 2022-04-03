@@ -18,6 +18,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.m37moud.mynewlang.util.Constants.Companion.ACTION_START_OR_RESUME_SERVICE
 import com.m37moud.mynewlang.util.Constants.Companion.AD_BANNER_ID
 import com.m37moud.mynewlang.util.Constants.Companion.AD_InterstitialAd_ID
 import com.m37moud.mynewlang.util.Constants.Companion.AD_REWARDEDED_ID
@@ -284,14 +285,14 @@ class MainActivity : AppCompatActivity() {
             this, AD_InterstitialAd_ID, adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
-                    Logger.d(TAG , "(loadInterstitialAd) loadAd is fail cause = ${adError.message} ")
+                    Logger.d(TAG, "(loadInterstitialAd) loadAd is fail cause = ${adError.message} ")
                     mInterstitialAd = null
                     mAdIsFailed = true
 //                    mAdIsLoading = false
                     val error = "domain: ${adError.domain}, code: ${adError.code}, " +
                             "message: ${adError.message}"
 
-                    Logger.d(TAG ,"(loadInterstitialAd) loadAd is fail $error ")
+                    Logger.d(TAG, "(loadInterstitialAd) loadAd is fail $error ")
 
                     Toast.makeText(
                         this@MainActivity,
@@ -301,7 +302,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    Logger.d(TAG ,"(loadInterstitialAd) onAdLoaded is sucsess  ")
+                    Logger.d(TAG, "(loadInterstitialAd) onAdLoaded is sucsess  ")
 
                     mInterstitialAd = interstitialAd
 //                    mAdIsLoading = false
@@ -354,7 +355,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     override fun onDestroy() {
         if (mRewardedAd != null) {
             mRewardedAd = null
@@ -365,7 +365,7 @@ class MainActivity : AppCompatActivity() {
             mInterstitialAd = null
         }
 
-        if (this.bannerAdShowed ) {
+        if (this.bannerAdShowed) {
             adView.destroy()
             entered_learn_ad_container.visibility = View.GONE
         }
@@ -386,8 +386,11 @@ class MainActivity : AppCompatActivity() {
 
                 //Add your code here for animation end
                 when {
-                    (mRewardedAd != null || mInterstitialAd != null)-> {
-                        Logger.d(TAG, "(startLoadingAnimation) onAnimationEnd. mRewardedAd or mInterstitialAd is not null")
+                    (mRewardedAd != null || mInterstitialAd != null) -> {
+                        Logger.d(
+                            TAG,
+                            "(startLoadingAnimation) onAnimationEnd. mRewardedAd or mInterstitialAd is not null"
+                        )
 
                         //   loading_btn.loop(false)
                         loading_btn.removeAllAnimatorListeners()
@@ -501,9 +504,15 @@ class MainActivity : AppCompatActivity() {
 //        )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-           startForegroundService(Intent(this, ClipboardService::class.java))
+            startForegroundService(Intent(this, ClipboardService::class.java)
+                .also {
+                    it.action = ACTION_START_OR_RESUME_SERVICE
+                })
+
         } else {
-           startService(Intent(this, ClipboardService::class.java))
+            startService(Intent(this, ClipboardService::class.java).also {
+                it.action = ACTION_START_OR_RESUME_SERVICE
+            })
         }
         finish()
 
@@ -528,12 +537,12 @@ class MainActivity : AppCompatActivity() {
         Logger.d(TAG, "(choseAdToLoad): called")
         adLoadCalled = true
 
-        if (rewardedShowTime<1) {
+        if (rewardedShowTime < 1) {
             Logger.d(TAG, "(choseAdToLoad): will load RewardedAd")
 
             loadRewardedAd()
 
-        }else{
+        } else {
             Logger.d(TAG, "(choseAdToLoad): will load InterstitialAd")
 
             loadInterstitialAd()
@@ -546,17 +555,17 @@ class MainActivity : AppCompatActivity() {
     private fun choseAdToShow(rewardedShowTime: Int) {
         Logger.d(TAG, "(choseAdToShow): called")
 
-        if (rewardedShowTime<1) {
+        if (rewardedShowTime < 1) {
             Logger.d(TAG, "(choseAdToShow): will show RewardedAd")
 
-            changeStateOFRewardedAD(numOfShow+1)
+            changeStateOFRewardedAD(numOfShow + 1)
 
             showRewardedAd(mRewardedAd)
 
-        }else{
+        } else {
             Logger.d(TAG, "(choseAdToShow): will show InterstitialAd")
 
-            changeStateOFRewardedAD(numOfShow-2)
+            changeStateOFRewardedAD(numOfShow - 2)
             showInterstitialAd()
 
         }
@@ -565,7 +574,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun changeStateOFRewardedAD(rewardedShowTime :Int){
+    private fun changeStateOFRewardedAD(rewardedShowTime: Int) {
         Logger.d(TAG, "(changeStateOFRewardedAD): called")
 
         val sharedPref = getSharedPreferences("RewardedAD", Context.MODE_PRIVATE)
@@ -590,28 +599,28 @@ class MainActivity : AppCompatActivity() {
             adView = AdView(this)
             entered_learn_ad_container.addView(adView)
 
-                adView.adSize = AdSize.BANNER
-                adView.adUnitId = AD_BANNER_ID
-                val adRequest = AdRequest.Builder()
-                    .build()
+            adView.adSize = AdSize.BANNER
+            adView.adUnitId = AD_BANNER_ID
+            val adRequest = AdRequest.Builder()
+                .build()
 
-                adView.adListener = object : AdListener() {
-                    override fun onAdLoaded() {
+            adView.adListener = object : AdListener() {
+                override fun onAdLoaded() {
 //                        ad_viewOffline.visibility = View.VISIBLE
-                        entered_learn_ad_container.visibility = View.VISIBLE
-                        bannerAdShowed = true
-                    }
-
-                    override fun onAdFailedToLoad(adError: LoadAdError) {
-//                        ad_viewOffline.visibility = View.GONE
-                        entered_learn_ad_container.visibility = View.GONE
-                        Logger.d("showAds", " : catch " + adError.toString())
-
-                    }
+                    entered_learn_ad_container.visibility = View.VISIBLE
+                    bannerAdShowed = true
                 }
 
-                entered_learn_ad_container.visibility = View.VISIBLE
-                adView.loadAd(adRequest)
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+//                        ad_viewOffline.visibility = View.GONE
+                    entered_learn_ad_container.visibility = View.GONE
+                    Logger.d("showAds", " : catch " + adError.toString())
+
+                }
+            }
+
+            entered_learn_ad_container.visibility = View.VISIBLE
+            adView.loadAd(adRequest)
         } catch (e: Exception) {
             entered_learn_ad_container.visibility = View.GONE
             e.printStackTrace()

@@ -15,7 +15,7 @@
         android:hardwareAccelerated="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/SplashScreenStyle">
+        android:theme="@style/SplashScreen">
 
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait">

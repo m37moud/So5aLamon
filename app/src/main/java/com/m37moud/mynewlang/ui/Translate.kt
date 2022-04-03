@@ -1,16 +1,17 @@
 package com.m37moud.mynewlang.ui
 
 import TranslateMessageIMPL
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.m37moud.mynewlang.R
 import android.app.AlertDialog
+import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.m37moud.mynewlang.R
 import com.m37moud.mynewlang.util.Constants.Companion.ORIGINAL_TXT
 import com.m37moud.mynewlang.util.Logger
 import com.skydoves.elasticviews.ElasticAnimation
 import kotlinx.android.synthetic.main.layout_translate_app.view.*
+
 
 private const val TAG = "Translate"
 
@@ -52,15 +53,26 @@ class Translate : AppCompatActivity() {
 
     }
 
+
     override fun onStop() {
         super.onStop()
 //        unregisterReceiver(notifyBroadcast)
     }
 
     override fun onBackPressed() {
-      Toast.makeText(this@Translate , "اضغط حسنا للقفل",Toast.LENGTH_SHORT).show()
+      Toast.makeText(this@Translate, "اضغط حسنا للقفل", Toast.LENGTH_SHORT).show()
 
     }
+    private fun textContainsArabic(text: String):Boolean{
+        for (charac in text.toCharArray()) {
+            if (Character.UnicodeBlock.of(charac) === Character.UnicodeBlock.ARABIC) {
+                return true
+            }
+        }
+        return false
+
+    }
+
 
 
     private fun showSettingDialog(encryptTXT: String, translateTXT: String) {
@@ -115,7 +127,7 @@ class Translate : AppCompatActivity() {
 
     }
 
-    private fun translateTxt(text : String):String{
+    private fun translateTxt(text: String):String{
 
         return translate.translateTxt(text)
     }

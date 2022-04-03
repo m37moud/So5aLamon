@@ -59,6 +59,8 @@ class EncryptionMessage : AppCompatActivity() {
             Logger.d(TAG, "TEXT IS $selectedText")
 
             val encryptedTxt = encryptTxt(selectedText)
+			
+			// try to remove clipboard listener from the service
 
             val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("toPaste" , encryptedTxt)

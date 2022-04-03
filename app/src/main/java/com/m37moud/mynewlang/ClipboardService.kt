@@ -17,6 +17,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.m37moud.mynewlang.util.Constants.Companion.ACTION_ENCRYPT
+import com.m37moud.mynewlang.util.Constants.Companion.ACTION_START_OR_RESUME_SERVICE
+import com.m37moud.mynewlang.util.Constants.Companion.ACTION_STOP_SERVICE
 import com.m37moud.mynewlang.util.Constants.Companion.ACTION_TRANSLATE
 import com.m37moud.mynewlang.util.Constants.Companion.ORIGINAL_TXT
 import com.m37moud.mynewlang.util.Logger
@@ -42,14 +44,9 @@ class ClipboardService : Service() {
 
 
 //           if(!encyprate)
-               showNotification(applicationContext)
+            showNotification(applicationContext)
 
             Logger.d(TAG, "new text clip inserted: " + txt.toString())
-            //                mThreadPool.execute(
-            //                    WriteHistoryRunnable(
-            //
-            //                    )
-            //                )
         }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -64,8 +61,6 @@ class ClipboardService : Service() {
         mClipboardManager!!.addPrimaryClipChangedListener(mOnPrimaryClipChangedListener)
         Logger.d(TAG, "onCreate service start")
 
-        var notification = serviceNotification()
-        startForeground(1, notification)
 
     }
 
@@ -84,24 +79,40 @@ class ClipboardService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Logger.d(TAG, "onStartCommand called ")
 
+        intent?.let {
+            when (it.action) {
+                ACTION_START_OR_RESUME_SERVICE -> {
+                    var notification = serviceNotification()
+                    startForeground(1, notification)
+                }
+                ACTION_STOP_SERVICE -> {
+                    stopService()
+                }
+
+            }
+
+        }
+
+
+
         return START_STICKY
     }
 
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        Logger.d(TAG, "onTaskRemoved called ")
-
-        val restartServiceIntent = Intent(applicationContext, this::class.java)
-        restartServiceIntent.setPackage(packageName)
-        val restartServicePendingIntent = PendingIntent.getService(applicationContext,1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT)
-
-        val alarmService = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        alarmService.set(
-            AlarmManager.ELAPSED_REALTIME,
-            SystemClock.elapsedRealtime() + 1000,
-            restartServicePendingIntent)
-//        super.onTaskRemoved(rootIntent)
-    }
+    //    override fun onTaskRemoved(rootIntent: Intent?) {
+//        Logger.d(TAG, "onTaskRemoved called ")
+//
+//        val restartServiceIntent = Intent(applicationContext, this::class.java)
+//        restartServiceIntent.setPackage(packageName)
+//        val restartServicePendingIntent = PendingIntent.getService(applicationContext,1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT)
+//
+//        val alarmService = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//
+//        alarmService.set(
+//            AlarmManager.ELAPSED_REALTIME,
+//            SystemClock.elapsedRealtime() + 1000,
+//            restartServicePendingIntent)
+////        super.onTaskRemoved(rootIntent)
+//    }
     private fun stopService() {
         Logger.d(TAG, "stopService called ")
 
@@ -111,6 +122,8 @@ class ClipboardService : Service() {
 
             stopForeground(true)
             stopSelf()
+            NotificationManagerCompat.from(applicationContext).cancel(1001)
+
         } catch (e: Exception) {
             Logger.d("Service stopped without being started: ${e.message}")
         }
@@ -165,35 +178,13 @@ class ClipboardService : Service() {
                     "translate",
                     translateIntent
                 )
-                .addAction(R.mipmap.ic_launcher,
+                .addAction(
+                    R.mipmap.ic_launcher,
                     "encryptIntent",
                     encrypteIntent
                 )
                 .build()
         notificationManager.notify(1001, notification)
-//        startForeground(1001, notification)
-
-//        with(NotificationManagerCompat.from(application)) {
-//            // notificationId is a unique int for each notification that you must define
-//            notify(1001, notification)
-//        }
-
-        //******************
-//        Logger.d(TAG, "( createNotification ) notify called")
-
-
-//        val notificationCompleted =
-//            NotificationCompat.Builder(context, channelId)
-//                .setColor(ContextCompat.getColor(context, R.color.background_dark))
-//                .setContentTitle(model.title)
-//                .setContentText("new story is added")
-//                .setAutoCancel(false)
-//                .setWhen(System.currentTimeMillis())
-//                .setOnlyAlertOnce(true)
-//                .setSmallIcon(R.mipmap.ic_launcher)
-//                .build()
-//        notificationManager.notify(1003, notificationCompleted)
-        //********************
     }
 
     private fun createExoDownloadNotificationChannel(context: Context): String? {
@@ -231,38 +222,43 @@ class ClipboardService : Service() {
         // depending on the Android API that we're dealing with we will have
         // to use a specific method to create the notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager;
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager;
+
             val channel = NotificationChannel(
                 notificationChannelId,
                 "Endless Service notifications channel",
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_LOW
             ).let {
                 it.description = "Endless Service channel"
                 it.enableLights(true)
                 it.lightColor = Color.RED
-                it.enableVibration(true)
 //                it.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
                 it
             }
             notificationManager.createNotificationChannel(channel)
         }
 
-        val pendingIntent: PendingIntent = Intent(this, MainActivity::class.java).let { notificationIntent ->
-            PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        val pendingIntent: PendingIntent = Intent(this, ClipboardService::class.java).apply {
+            action = ACTION_STOP_SERVICE
+        }.let { notificationIntent ->
+            PendingIntent.getService(this, 0, notificationIntent, 0)
         }
 
-        val builder: Notification.Builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Notification.Builder(
-            this,
-            notificationChannelId
-        ) else Notification.Builder(this)
+        val builder: Notification.Builder =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Notification.Builder(
+                this,
+                notificationChannelId
+            ) else Notification.Builder(this)
 
         return builder
+            .setAutoCancel(false) // to make user cant dismiss notification
             .setContentTitle("سغة لمون")
             .setContentText("سغال شجرة")
-//            .setContentIntent(pendingIntent)
+            .addAction(R.drawable.ic_happy, "STOP", pendingIntent)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setOngoing(true)
-            .setPriority(Notification.PRIORITY_HIGH) // for under android 26 compatibility
+            .setOngoing(true) // to make notification cant swipe away
+            .setPriority(Notification.PRIORITY_LOW) // for under android 26 compatibility
             .build()
     }
 

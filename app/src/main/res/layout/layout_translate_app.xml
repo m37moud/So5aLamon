@@ -10,10 +10,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="3"
-        android:background="@drawable/dialog_round"
-
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
         android:gravity="center"
+        android:padding="@dimen/_10sdp"
 
         >
 
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_margin="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_18sdp"
 
             android:backgroundTint="@color/lightGray"
             app:cardCornerRadius="10dp"
@@ -32,21 +32,26 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/blue"
+            app:strokeColor="@color/darkorange"
             app:strokeWidth="3dp">
 
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+
+                android:background="@color/yellow">
 
                 <TextView
                     android:id="@+id/encrypt_txt"
-                    android:text="test bs"
                     style="@style/text_views"
-                    android:layout_margin="@dimen/_8sdp"
                     android:layout_width="@dimen/_250sdp"
-                    android:layout_height="@dimen/_150sdp" />
+                    android:layout_height="@dimen/_150sdp"
+                    android:textSize="@dimen/_20ssp"
+
+                    android:layout_margin="@dimen/_8sdp"
+                    android:elevation="@dimen/_10sdp"
+                    android:text="test bs" />
 
             </FrameLayout>
 
@@ -68,21 +73,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_container_controller"
-            app:strokeColor="@color/blue"
+            app:strokeColor="@color/darkorange"
             app:strokeWidth="3dp">
 
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:background="@color/yellow">
 
                 <TextView
                     android:id="@+id/translated_txt"
-                    android:text="test bs"
                     style="@style/text_views"
-                    android:layout_margin="@dimen/_8sdp"
                     android:layout_width="@dimen/_250sdp"
-                    android:layout_height="@dimen/_150sdp" />
+                    android:layout_height="@dimen/_150sdp"
+                    android:textSize="@dimen/_20ssp"
+
+                    android:layout_margin="@dimen/_8sdp"
+                    android:elevation="@dimen/_10sdp"
+                    android:text="test bs" />
 
             </FrameLayout>
 
@@ -103,7 +112,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_container_share"
-            app:strokeColor="@color/blue"
+            app:strokeColor="@color/darkorange"
             app:strokeWidth="3dp">
 
             <LinearLayout
@@ -117,10 +126,10 @@
                     android:layout_width="@dimen/_80sdp"
                     android:layout_height="@dimen/_60sdp"
                     android:layout_gravity="bottom"
-                    android:backgroundTint="@color/lightGray"
+                    android:backgroundTint="@color/yellow"
                     android:elevation="10dp"
                     android:text="حسنا"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/_20sdp"
                     android:textStyle="bold" />
 
