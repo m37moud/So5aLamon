@@ -35,18 +35,27 @@
             app:strokeColor="@color/darkorange"
             app:strokeWidth="3dp">
 
+            <ScrollView
+                android:layout_width="@dimen/_230sdp"
+                android:layout_height="@dimen/_150sdp"
+                android:scrollbars="vertical"
+
+                android:padding="@dimen/_4sdp"
+
+
+                >
 
                 <TextView
                     android:id="@+id/encrypt_txt"
                     style="@style/text_views"
-                    android:layout_width="@dimen/_230sdp"
-
-                    android:layout_height="@dimen/_150sdp"
-                    android:textSize="@dimen/_20ssp"
-
-                    android:layout_margin="@dimen/_8sdp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_10sdp"
                     android:elevation="@dimen/_10sdp"
-                    android:text="test bs" />
+                    android:text="test bs"
+                    android:textSize="@dimen/_20ssp" />
+
+            </ScrollView>
 
 
         </com.google.android.material.card.MaterialCardView>
@@ -70,17 +79,25 @@
             app:strokeColor="@color/darkorange"
             app:strokeWidth="3dp">
 
+            <ScrollView
+                android:layout_width="@dimen/_230sdp"
+                android:layout_height="@dimen/_150sdp"
+                android:scrollbars="vertical"
+                android:padding="@dimen/_4sdp"
+
+                >
 
                 <TextView
                     android:id="@+id/translated_txt"
                     style="@style/text_views"
-                    android:layout_width="@dimen/_230sdp"
-                    android:layout_height="@dimen/_150sdp"
-                    android:textSize="@dimen/_20ssp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_10sdp"
 
-                    android:layout_margin="@dimen/_8sdp"
                     android:elevation="@dimen/_10sdp"
-                    android:text="test bs" />
+                    android:text="test bs"
+                    android:textSize="@dimen/_20ssp" />
+            </ScrollView>
 
 
         </com.google.android.material.card.MaterialCardView>

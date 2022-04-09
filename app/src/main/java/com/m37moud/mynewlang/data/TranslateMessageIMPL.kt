@@ -18,12 +18,12 @@ class TranslateMessageIMPL {
     }
 
     private fun extractWords(txt: String): List<String> {
-        var t = txt.trim().split(" ").filter { it != "" }
+        val t = txt.trim().split(" ").filter { it != "" }
 //        t.toMutableList()
         val tt = mutableListOf<String>()
-       if (t.size <=1){
-           throw InvalidTextException("مش هينفع تترجم دى")
-       }
+        if (t.size <= 1) {
+            throw InvalidTextException("مش هينفع تترجم دى")
+        }
 
         t.forEach { txt ->
             if ((txt.filter { it in 'أ'..'ي' }.length == txt.length)) {
@@ -43,7 +43,7 @@ class TranslateMessageIMPL {
                 } else {
                     tt[i].substring(1)
                 }
-//                println(s)
+                println("text will add is = $s")
                 originalList.add(s)
 
             } else {
@@ -60,7 +60,12 @@ class TranslateMessageIMPL {
         val list = mutableListOf<String>()
         repeat(charList.size) { i ->
             println(wordList[i])
-            val word = if (wordList[i][0] == 'ا' && wordList[i][1] == 'ل') {
+            println(charList[i])
+
+            val word = if (wordList[i].isEmpty()) {
+                println("if size == 0 ")
+                charList[i].plus(wordList[i])
+            } else if (wordList[i][0] == 'ا' && wordList[i][1] == 'ل') {
                 println("if true ")
                 addThirdChar(wordList[i], charList[i])
 

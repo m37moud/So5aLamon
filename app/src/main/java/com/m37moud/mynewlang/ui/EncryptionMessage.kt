@@ -1,19 +1,22 @@
 package com.m37moud.mynewlang.ui
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
-import com.m37moud.mynewlang.data.EncryptionMessageIMPL
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.m37moud.mynewlang.R
+import com.m37moud.mynewlang.data.EncryptionMessageIMPL
+import com.m37moud.mynewlang.ui.custom.MyAlertDialog
 import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Constants.Companion.ENCRYPT_ACTION
 import com.m37moud.mynewlang.util.Constants.Companion.textContainsArabic
 import com.m37moud.mynewlang.util.Logger
+
 
 private const val TAG = "EncryptionMessage"
 
@@ -98,6 +101,12 @@ class EncryptionMessage : AppCompatActivity() {
                 // assume the service is started, and already registered the receiver
                 sendBroadcast(Intent(ENCRYPT_ACTION).putExtra("copied", true))
 //            showSnackBar("اضغط لصق لوضع النص الجديد بعد التغير")
+//                AlertsDialogue(applicationContext, "title", "message")
+//                Intent(this, MyAlertDialog::class.java).apply {
+//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                    this@EncryptionMessage.startActivity(this)
+//                }
+//
 //            Snackbar.make(
 //                view,
 //                msg,
@@ -116,13 +125,19 @@ class EncryptionMessage : AppCompatActivity() {
         return encryption.encryptTxt(txt)
     }
 
-    private fun showSnackBar(msg: String) {
-        val view = this.findViewById<View>(R.id.encrypt_txt_container)
-        Snackbar.make(
-            view,
-            msg,
-            Snackbar.LENGTH_LONG
-        ).setAction(getString(R.string.OK)) {}
+//    private fun showSnackBar(msg: String) {
+////        val view = this.findViewById<View>(R.id.encrypt_txt_container)
+//        Snackbar.make(
+//            android.R.id.content,
+//            msg,
+//            Snackbar.LENGTH_LONG
+//        ).setAction(getString(R.string.OK)) {}
+//            .show()
+//    }
+    fun Activity.showSnackBar(msg: String){
+        Snackbar.make(this.findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
+            .setAction("Ok"){
+            }
             .show()
     }
 }
