@@ -1,26 +1,25 @@
 package com.m37moud.mynewlang
 
 import android.app.*
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.media.RingtoneManager.TYPE_NOTIFICATION
 import android.net.Uri
-import android.os.Build
-import android.os.IBinder
-import android.os.SystemClock
+import android.os.*
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Constants.Companion.ACTION_ENCRYPT
 import com.m37moud.mynewlang.util.Constants.Companion.ACTION_START_OR_RESUME_SERVICE
 import com.m37moud.mynewlang.util.Constants.Companion.ACTION_STOP_SERVICE
 import com.m37moud.mynewlang.util.Constants.Companion.ACTION_TRANSLATE
+import com.m37moud.mynewlang.util.Constants.Companion.ENCRYPT_ACTION
 import com.m37moud.mynewlang.util.Constants.Companion.ORIGINAL_TXT
+import com.m37moud.mynewlang.util.Constants.Companion.textContainsArabic
 import com.m37moud.mynewlang.util.Logger
 
 private const val TAG = "ClipboardService"
@@ -30,24 +29,33 @@ class ClipboardService : Service() {
 
     private var txt = ""
     private var encyprate = false
+    var copiedState = false
     private var isServiceStarted = false
 
     private var mClipboardManager: ClipboardManager? = null
-    private val mOnPrimaryClipChangedListener: ClipboardManager.OnPrimaryClipChangedListener =
-        ClipboardManager.OnPrimaryClipChangedListener {
-            NotificationManagerCompat.from(applicationContext).cancel(1001)
+    private val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+             copiedState = intent.getBooleanExtra("copied", false)
+            Logger.d(TAG,"onReceive: ${intent.getBooleanExtra("copied", true)}")
 
-            Logger.d(TAG, "onPrimaryClipChanged")
-            val clip: ClipData = mClipboardManager!!.primaryClip!!
-            txt = (clip.getItemAt(0).text).toString()
-//            Toast.makeText(applicationContext, " text clip inserted:: ${txt}", Toast.LENGTH_LONG).show()
-
-
-//           if(!encyprate)
-            showNotification(applicationContext)
-
-            Logger.d(TAG, "new text clip inserted: " + txt.toString())
+            if(copiedState) encyprate = false
         }
+    }
+//    private val mOnPrimaryClipChangedListener: ClipboardManager.OnPrimaryClipChangedListener =
+//        ClipboardManager.OnPrimaryClipChangedListener {
+//            NotificationManagerCompat.from(applicationContext).cancel(1001)
+//
+//            Logger.d(TAG, "onPrimaryClipChanged")
+//            val clip: ClipData = mClipboardManager!!.primaryClip!!
+//            txt = (clip.getItemAt(0).text).toString()
+////            Toast.makeText(applicationContext, " text clip inserted:: ${txt}", Toast.LENGTH_LONG).show()
+//
+//
+////           if(!encyprate)
+//            showNotification(applicationContext)
+//
+//            Logger.d(TAG, "new text clip inserted: " + txt.toString())
+//        }
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -55,10 +63,47 @@ class ClipboardService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Logger.d(TAG, "onCreate called ")
+        Logger.d(TAG, "onCreate called and encyprate is $encyprate ")
 
         mClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        mClipboardManager!!.addPrimaryClipChangedListener(mOnPrimaryClipChangedListener)
+//        mClipboardManager!!.addPrimaryClipChangedListener(mOnPrimaryClipChangedListener)
+//        LocalBroadcastManager.getInstance(this).
+        registerReceiver(broadcastReceiver, IntentFilter(ENCRYPT_ACTION))
+        mClipboardManager!!.addPrimaryClipChangedListener {
+
+
+            NotificationManagerCompat.from(applicationContext).cancel(1001)
+
+            Logger.d(TAG, "onPrimaryClipChanged encyprate is $encyprate - and copiedState = $copiedState")
+            val clip: ClipData = mClipboardManager!!.primaryClip!!
+            txt = (clip.getItemAt(0).text).toString()
+//            Toast.makeText(applicationContext, " text clip inserted:: ${txt}", Toast.LENGTH_LONG).show()
+            Logger.d(TAG, "new text clip inserted: " + txt.toString())
+
+            if(!textContainsArabic(txt)) {
+                Toast.makeText(this, "عربى بس", Toast.LENGTH_SHORT).show()
+
+            }else{
+                if(!encyprate) {
+                    showNotification(applicationContext)
+                }
+                else{
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            encyprate =false
+
+
+                        }, 1000
+                    )
+                }
+            }
+
+
+
+        }
+
+
+
         Logger.d(TAG, "onCreate service start")
 
 
@@ -68,9 +113,10 @@ class ClipboardService : Service() {
         Logger.d(TAG, "onDestroy called ")
 
         super.onDestroy()
-        stopService()
+//        stopService()
+        unregisterReceiver(broadcastReceiver)
         if (mClipboardManager != null) {
-            mClipboardManager!!.removePrimaryClipChangedListener(mOnPrimaryClipChangedListener)
+//            mClipboardManager!!.removePrimaryClipChangedListener(mOnPrimaryClipChangedListener)
 
         }
         NotificationManagerCompat.from(applicationContext).cancel(1001)
@@ -98,21 +144,21 @@ class ClipboardService : Service() {
         return START_STICKY
     }
 
-    //    override fun onTaskRemoved(rootIntent: Intent?) {
-//        Logger.d(TAG, "onTaskRemoved called ")
-//
-//        val restartServiceIntent = Intent(applicationContext, this::class.java)
-//        restartServiceIntent.setPackage(packageName)
-//        val restartServicePendingIntent = PendingIntent.getService(applicationContext,1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT)
-//
-//        val alarmService = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//
-//        alarmService.set(
-//            AlarmManager.ELAPSED_REALTIME,
-//            SystemClock.elapsedRealtime() + 1000,
-//            restartServicePendingIntent)
-////        super.onTaskRemoved(rootIntent)
-//    }
+        override fun onTaskRemoved(rootIntent: Intent?) {
+        Logger.d(TAG, "onTaskRemoved called ")
+
+        val restartServiceIntent = Intent(applicationContext, this::class.java)
+        restartServiceIntent.setPackage(packageName)
+        val restartServicePendingIntent = PendingIntent.getService(applicationContext,1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT)
+
+        val alarmService = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        alarmService.set(
+            AlarmManager.ELAPSED_REALTIME,
+            SystemClock.elapsedRealtime() + 1000,
+            restartServicePendingIntent)
+//        super.onTaskRemoved(rootIntent)
+    }
     private fun stopService() {
         Logger.d(TAG, "stopService called ")
 
@@ -172,6 +218,7 @@ class ClipboardService : Service() {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setWhen(System.currentTimeMillis())
                 .setSound(alarmSound)
+                .setGroup("GROUP")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .addAction(
                     R.mipmap.ic_launcher,

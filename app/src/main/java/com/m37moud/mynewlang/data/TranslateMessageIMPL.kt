@@ -1,3 +1,5 @@
+import com.m37moud.mynewlang.util.InvalidTextException
+
 class TranslateMessageIMPL {
     private val originalList = mutableListOf<String>()
     private val secondList = mutableListOf<String>()
@@ -16,24 +18,36 @@ class TranslateMessageIMPL {
     }
 
     private fun extractWords(txt: String): List<String> {
-        val t = txt.split(" ")
+        var t = txt.trim().split(" ").filter { it != "" }
+//        t.toMutableList()
+        val tt = mutableListOf<String>()
+       if (t.size <=1){
+           throw InvalidTextException("مش هينفع تترجم دى")
+       }
 
+        t.forEach { txt ->
+            if ((txt.filter { it in 'أ'..'ي' }.length == txt.length)) {
+                tt.add(txt)
+            }
+
+        }
+        println(tt.toString())
         var s = ""
-        repeat(t.size) { i ->
+
+        repeat(tt.size) { i ->
 
             if (i % 2 == 0) {
-
-                s = if (t[i][0] == 'ا' && t[i][1] == 'ل') {
-                    removeThirdCharChar(t[i])
+                s = if (tt[i][0] == 'ا' && tt[i][1] == 'ل') {
+                    removeThirdCharChar(tt[i])
 
                 } else {
-                    t[i].substring(1)
+                    tt[i].substring(1)
                 }
 //                println(s)
                 originalList.add(s)
 
             } else {
-                val firstChar = t[i][0].toString()
+                val firstChar = tt[i][0].toString()
 
                 secondList.add(firstChar)
             }

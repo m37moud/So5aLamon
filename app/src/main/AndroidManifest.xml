@@ -31,11 +31,11 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:taskAffinity=""
-            android:theme="@style/Theme.MaterialComponents.Light.Dialog">
+            android:theme="@style/DialogTheme">
 
         </activity>
         <activity
-            android:name=".EncryptionMessage"
+            android:name=".ui.EncryptionMessage"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:taskAffinity=""
@@ -78,7 +78,7 @@
 
             android:value="ca-app-pub-3940256099942544~3347511713" />
         <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
-        <!-- original AdMob app ID: ca-app-pub-9331212887639574~2078263925 -->
+        <!-- original AdMob app ID: ca-app-pub-9331212887639574~2273583581 -->
 
     </application>
 

@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import com.m37moud.mynewlang.ui.EncryptionMessage
 import com.m37moud.mynewlang.ui.Translate
 import com.m37moud.mynewlang.util.Constants
+import com.m37moud.mynewlang.util.Constants.Companion.textContainsArabic
 import com.m37moud.mynewlang.util.Logger
 
 
@@ -29,44 +31,41 @@ class NotifyBroadcast : BroadcastReceiver() {
         val action = intent?.action
         Logger.d(TAG, "onReceive: action is = $action")
         if (action == ACTION_TRANSLATE) {
-
             //do required
-            val t = intent.getStringExtra(ORIGINAL_TXT)
-           val translateIntent = Intent(context , Translate::class.java).apply {
-                putExtra(ORIGINAL_TXT,t)
-               flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            context?.startActivity(translateIntent)
+            val t = intent.getStringExtra(ORIGINAL_TXT).toString()
+
+                val translateIntent = Intent(context , Translate::class.java).apply {
+                    putExtra(ORIGINAL_TXT,t)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context?.startActivity(translateIntent)
 
 
-            Toast.makeText(context, "  ${ACTION_TRANSLATE}", Toast.LENGTH_LONG)
-            Logger.d(TAG, "if: aaaaaa is = $t")
+                Toast.makeText(context, "  ${ACTION_TRANSLATE}", Toast.LENGTH_LONG)
+                Logger.d(TAG, "if: aaaaaa is = $t")
+
 
 
 //            clearService()
         } else if (action == ACTION_ENCRYPT) {
             //do required
 
-            val t = intent.getStringExtra(ORIGINAL_TXT)
-            val encryptIntent = Intent(context , EncryptionMessage::class.java).apply {
-                putExtra(ORIGINAL_TXT,t)
-                this.action = Constants.ACTION_ENCRYPT
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            context?.startActivity(encryptIntent)
+            val t = intent.getStringExtra(ORIGINAL_TXT).toString()
 
-            Toast.makeText(context, " ${ACTION_ENCRYPT}", Toast.LENGTH_LONG)
-            Logger.d(TAG, "if: action is = $action")
+                val encryptIntent = Intent(context , EncryptionMessage::class.java).apply {
+                    putExtra(ORIGINAL_TXT,t)
+                    this.action = Constants.ACTION_ENCRYPT
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context?.startActivity(encryptIntent)
+
+                Toast.makeText(context, " ${ACTION_ENCRYPT}", Toast.LENGTH_LONG)
+                Logger.d(TAG, "if: action is = $action")
+
 
 
 //        clearService()
         }
     }
-    private fun pasteEncrypt(){
 
-    }
-
-    private fun showTranslateTxt(){
-
-    }
 }

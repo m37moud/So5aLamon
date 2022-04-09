@@ -2,12 +2,15 @@ package com.m37moud.mynewlang.ui
 
 import TranslateMessageIMPL
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.m37moud.mynewlang.R
+import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Constants.Companion.ORIGINAL_TXT
+import com.m37moud.mynewlang.util.InvalidTextException
 import com.m37moud.mynewlang.util.Logger
 import com.skydoves.elasticviews.ElasticAnimation
 import kotlinx.android.synthetic.main.layout_translate_app.view.*
@@ -29,26 +32,31 @@ class Translate : AppCompatActivity() {
 
         val intent = intent
         encryptTXT = intent?.getStringExtra(ORIGINAL_TXT).toString()
+
+
         Logger.d(TAG, " action TEXT IS ${intent.action}")
-        translate = TranslateMessageIMPL()
 
 
-        if (!encryptTXT.isNullOrBlank()){
-            translateTXT = translateTxt(encryptTXT)
-            if (!translateTXT.isNullOrBlank()){
-                showSettingDialog(encryptTXT, translateTXT)
+
+
+        if (!encryptTXT.isNullOrBlank()) {
+
+            try {
+                translate = TranslateMessageIMPL()
+                translateTXT = translateTxt(encryptTXT)
+                if (!translateTXT.isNullOrBlank()) {
+                    showSettingDialog(encryptTXT, translateTXT)
+                }
+
+            } catch (e: InvalidTextException) {
+                Toast.makeText(this@Translate, e.message, Toast.LENGTH_SHORT).show()
+                sendBroadcast(Intent(Constants.ENCRYPT_ACTION).putExtra("copied", true))
+                finish()
+
             }
 
+
         }
-
-
-
-/**
-*
-*text.replace("/[\u2190-\u21FF]|[\u2600-\u26FF]|[\u2700-\u27BF]|[\u3000-\u303F]|[\u1F300-\u1F64F]|[\u1F680-\u1F6FF]/g", "")
-*
-*
-*/
 
 
     }
@@ -60,22 +68,13 @@ class Translate : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-      Toast.makeText(this@Translate, "اضغط حسنا للقفل", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this@Translate, "اضغط حسنا للقفل", Toast.LENGTH_SHORT).show()
 
     }
-    private fun textContainsArabic(text: String):Boolean{
-        for (charac in text.toCharArray()) {
-            if (Character.UnicodeBlock.of(charac) === Character.UnicodeBlock.ARABIC) {
-                return true
-            }
-        }
-        return false
-
-    }
-
 
 
     private fun showSettingDialog(encryptTXT: String, translateTXT: String) {
+        Logger.d(TAG, "showSettingDialog ")
 
         val builder = AlertDialog.Builder(this)
 
@@ -121,13 +120,16 @@ class Translate : AppCompatActivity() {
 
         translateDialog.show()
         translateDialog.setOnDismissListener {
+            Logger.d(TAG, "showSettingDialog ")
+            sendBroadcast(Intent(Constants.ENCRYPT_ACTION).putExtra("copied", true))
+
             finishAfterTransition()
         }
 
 
     }
 
-    private fun translateTxt(text: String):String{
+    private fun translateTxt(text: String): String {
 
         return translate.translateTxt(text)
     }
