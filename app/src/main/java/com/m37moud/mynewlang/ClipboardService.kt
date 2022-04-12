@@ -32,30 +32,48 @@ class ClipboardService : Service() {
     var copiedState = false
     private var isServiceStarted = false
 
-    private var mClipboardManager: ClipboardManager? = null
+    private val mClipboardManager: ClipboardManager by lazy {
+        getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    }
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-             copiedState = intent.getBooleanExtra("copied", false)
-            Logger.d(TAG,"onReceive: ${intent.getBooleanExtra("copied", true)}")
+            copiedState = intent.getBooleanExtra("copied", false)
+            Logger.d(TAG, "onReceive: ${intent.getBooleanExtra("copied", true)}")
 
-            if(copiedState) encyprate = false
+            if (copiedState) encyprate = false
         }
     }
-//    private val mOnPrimaryClipChangedListener: ClipboardManager.OnPrimaryClipChangedListener =
-//        ClipboardManager.OnPrimaryClipChangedListener {
-//            NotificationManagerCompat.from(applicationContext).cancel(1001)
-//
-//            Logger.d(TAG, "onPrimaryClipChanged")
-//            val clip: ClipData = mClipboardManager!!.primaryClip!!
-//            txt = (clip.getItemAt(0).text).toString()
-////            Toast.makeText(applicationContext, " text clip inserted:: ${txt}", Toast.LENGTH_LONG).show()
-//
-//
-////           if(!encyprate)
-//            showNotification(applicationContext)
-//
-//            Logger.d(TAG, "new text clip inserted: " + txt.toString())
-//        }
+    private val mOnPrimaryClipChangedListener: ClipboardManager.OnPrimaryClipChangedListener =
+        ClipboardManager.OnPrimaryClipChangedListener {
+            NotificationManagerCompat.from(applicationContext).cancel(1001)
+
+            Logger.d(
+                TAG,
+                "onPrimaryClipChanged encyprate is $encyprate - and copiedState = $copiedState"
+            )
+            val clip: ClipData = mClipboardManager!!.primaryClip!!
+            txt = (clip.getItemAt(0).text).toString()
+//            Toast.makeText(applicationContext, " text clip inserted:: ${txt}", Toast.LENGTH_LONG).show()
+            Logger.d(TAG, "new text clip inserted: " + txt.toString())
+
+            if (!textContainsArabic(txt)) {
+                Toast.makeText(this, "عربى بس", Toast.LENGTH_SHORT).show()
+
+            } else {
+                if (!encyprate) {
+                    showNotification(applicationContext)
+                } else {
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            encyprate = false
+
+
+                        }, 1000
+                    )
+                }
+            }
+
+        }
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -65,43 +83,43 @@ class ClipboardService : Service() {
         super.onCreate()
         Logger.d(TAG, "onCreate called and encyprate is $encyprate ")
 
-        mClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+//        mClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 //        mClipboardManager!!.addPrimaryClipChangedListener(mOnPrimaryClipChangedListener)
 //        LocalBroadcastManager.getInstance(this).
         registerReceiver(broadcastReceiver, IntentFilter(ENCRYPT_ACTION))
-        mClipboardManager!!.addPrimaryClipChangedListener {
 
-
-            NotificationManagerCompat.from(applicationContext).cancel(1001)
-
-            Logger.d(TAG, "onPrimaryClipChanged encyprate is $encyprate - and copiedState = $copiedState")
-            val clip: ClipData = mClipboardManager!!.primaryClip!!
-            txt = (clip.getItemAt(0).text).toString()
-//            Toast.makeText(applicationContext, " text clip inserted:: ${txt}", Toast.LENGTH_LONG).show()
-            Logger.d(TAG, "new text clip inserted: " + txt.toString())
-
-            if(!textContainsArabic(txt)) {
-                Toast.makeText(this, "عربى بس", Toast.LENGTH_SHORT).show()
-
-            }else{
-                if(!encyprate) {
-                    showNotification(applicationContext)
-                }
-                else{
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            encyprate =false
-
-
-                        }, 1000
-                    )
-                }
-            }
-
-
-
-        }
-
+//        mClipboardManager!!.addPrimaryClipChangedListener {
+//
+//
+//            NotificationManagerCompat.from(applicationContext).cancel(1001)
+//
+//            Logger.d(TAG, "onPrimaryClipChanged encyprate is $encyprate - and copiedState = $copiedState")
+//            val clip: ClipData = mClipboardManager!!.primaryClip!!
+//            txt = (clip.getItemAt(0).text).toString()
+////            Toast.makeText(applicationContext, " text clip inserted:: ${txt}", Toast.LENGTH_LONG).show()
+//            Logger.d(TAG, "new text clip inserted: " + txt.toString())
+//
+//            if(!textContainsArabic(txt)) {
+//                Toast.makeText(this, "عربى بس", Toast.LENGTH_SHORT).show()
+//
+//            }else{
+//                if(!encyprate) {
+//                    showNotification(applicationContext)
+//                }
+//                else{
+//                    Handler(Looper.getMainLooper()).postDelayed(
+//                        {
+//                            encyprate =false
+//
+//
+//                        }, 1000
+//                    )
+//                }
+//            }
+//
+//
+//
+//        }
 
 
         Logger.d(TAG, "onCreate service start")
@@ -116,7 +134,7 @@ class ClipboardService : Service() {
 //        stopService()
         unregisterReceiver(broadcastReceiver)
         if (mClipboardManager != null) {
-//            mClipboardManager!!.removePrimaryClipChangedListener(mOnPrimaryClipChangedListener)
+            mClipboardManager!!.removePrimaryClipChangedListener(mOnPrimaryClipChangedListener)
 
         }
         NotificationManagerCompat.from(applicationContext).cancel(1001)
@@ -126,9 +144,11 @@ class ClipboardService : Service() {
         Logger.d(TAG, "onStartCommand called ")
 
         intent?.let {
+            mClipboardManager!!.addPrimaryClipChangedListener(mOnPrimaryClipChangedListener)
+
             when (it.action) {
                 ACTION_START_OR_RESUME_SERVICE -> {
-                    var notification = serviceNotification()
+                    val notification = serviceNotification()
                     startForeground(1, notification)
                 }
                 ACTION_STOP_SERVICE -> {
@@ -144,21 +164,29 @@ class ClipboardService : Service() {
         return START_STICKY
     }
 
-        override fun onTaskRemoved(rootIntent: Intent?) {
+    override fun onTaskRemoved(rootIntent: Intent?) {
         Logger.d(TAG, "onTaskRemoved called ")
 
         val restartServiceIntent = Intent(applicationContext, this::class.java)
         restartServiceIntent.setPackage(packageName)
-        val restartServicePendingIntent = PendingIntent.getService(applicationContext,1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT)
+        val restartServicePendingIntent = PendingIntent.getService(
+            applicationContext,
+            1,
+            restartServiceIntent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
 
-        val alarmService = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmService =
+            applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         alarmService.set(
             AlarmManager.ELAPSED_REALTIME,
             SystemClock.elapsedRealtime() + 1000,
-            restartServicePendingIntent)
-//        super.onTaskRemoved(rootIntent)
+            restartServicePendingIntent
+        )
+        super.onTaskRemoved(rootIntent)
     }
+
     private fun stopService() {
         Logger.d(TAG, "stopService called ")
 
@@ -233,6 +261,7 @@ class ClipboardService : Service() {
                 .build()
         notificationManager.notify(1001, notification)
     }
+
 
     private fun createExoDownloadNotificationChannel(context: Context): String? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

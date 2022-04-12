@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
 
     <application
         android:allowBackup="true"
@@ -48,23 +50,27 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.PROCESS_TEXT" />
-
                 <data android:mimeType="text/plain" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".ClipboardService"
+        <service android:name=".ClipboardService"
+            android:process=":MyService"
             android:enabled="true"
-            android:process=":MyService" />
+            android:exported="false"
+            />
+        <service
+            android:name=".FloatingWidgetService"
+            android:enabled="true"
+            android:exported="false" />
 
         <receiver android:name=".CopyBroadcast">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name=".NotifyBroadcast"
             android:enabled="true"
@@ -76,9 +82,16 @@
             </intent-filter>
         </receiver>
 
+
+
         <meta-data
+
             android:name="com.google.android.gms.ads.APPLICATION_ID"
+
             android:value="ca-app-pub-3940256099942544~3347511713" />
+        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+        <!-- original AdMob app ID: ca-app-pub-9331212887639574~2273583581 -->
+
     </application>
 
 </manifest>

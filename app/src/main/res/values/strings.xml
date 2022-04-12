@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MyNewLang</string>
     <string name="OK">حسنا</string>
+    <string name="draw_other_app_permission_denied">permisssion is denied</string>
 
 
 </resources>

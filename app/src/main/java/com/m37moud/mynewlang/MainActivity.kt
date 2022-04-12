@@ -1,10 +1,13 @@
 package com.m37moud.mynewlang
 
 import android.animation.Animator
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
@@ -497,7 +500,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startMyService() {
+
         Logger.d(TAG, "(startMyService) called.")
+        checkUserPermissionAndShowFB()
 
 //        startService(
 //            Intent(this@MainActivity, ClipboardService::class.java)
@@ -644,4 +649,42 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //for moving button
+    private fun checkUserPermissionAndShowFB() {
+        Logger.d(TAG, "(checkUserPermissionAndShowFB) called.")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
+            startActivityForResult(intent, DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE)
+        } else
+            startFloatingWidgetService()
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK)
+                startFloatingWidgetService() else
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.draw_other_app_permission_denied),
+                    Toast.LENGTH_SHORT
+                ).show()
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun startFloatingWidgetService() {
+        startService(Intent(this@MainActivity, FloatingWidgetService::class.java))
+        finish()
+    }
+
+
+    companion object {
+        private const val DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE = 1222
+    }
 }
