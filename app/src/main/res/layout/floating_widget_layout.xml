@@ -19,19 +19,19 @@
 
             <ImageView
                 android:id="@+id/image_collapsed"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
                 android:layout_marginTop="8dp"
                 android:src="@mipmap/ic_launcher_round"
                 tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/image_close_floating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/circle_shape"
+                android:background="@drawable/ic_happy"
                 android:src="@drawable/ic_close_white"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>

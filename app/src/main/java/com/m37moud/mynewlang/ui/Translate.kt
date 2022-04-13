@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.m37moud.mynewlang.R
 import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Constants.Companion.ORIGINAL_TXT
+import com.m37moud.mynewlang.util.InvalidTextException
 import com.m37moud.mynewlang.util.Logger
 import com.skydoves.elasticviews.ElasticAnimation
 import kotlinx.android.synthetic.main.layout_translate_app.view.*

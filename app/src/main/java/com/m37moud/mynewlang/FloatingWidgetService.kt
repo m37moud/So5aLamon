@@ -108,7 +108,7 @@ class FloatingWidgetService : Service(), View.OnClickListener {
     }
 
     private val windowManagerDefaultDisplay: Unit
-        private get() {
+        get() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) mWindowManager!!.defaultDisplay.getSize(szWindow) else {
                 val w = mWindowManager!!.defaultDisplay.width
                 val h = mWindowManager!!.defaultDisplay.height
