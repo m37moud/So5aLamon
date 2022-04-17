@@ -21,11 +21,15 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.m37moud.mynewlang.ui.Translate
+import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Constants.Companion.ACTION_START_OR_RESUME_SERVICE
 import com.m37moud.mynewlang.util.Constants.Companion.AD_BANNER_ID
 import com.m37moud.mynewlang.util.Constants.Companion.AD_InterstitialAd_ID
 import com.m37moud.mynewlang.util.Constants.Companion.AD_REWARDEDED_ID
 import com.m37moud.mynewlang.util.Logger
+import com.sha.apphead.AppHead
+import com.sha.apphead.BadgeView
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -47,6 +51,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adView: AdView   //banner ads
     private var bannerAdShowed = false//banner ads
     private var numOfShow = 0
+
+
+
+    private var isViewCollapsed = false
 
     //end of ads refrence
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -660,14 +668,19 @@ class MainActivity : AppCompatActivity() {
             )
             startActivityForResult(intent, DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE)
         } else
-            startFloatingWidgetService()
+//            startFloatingWidgetService()
+        showCustomUsingKotlinDsl()
+
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK)
-                startFloatingWidgetService() else
+//                startFloatingWidgetService()
+            showCustomUsingKotlinDsl()
+
+            else
                 Toast.makeText(
                     this,
                     resources.getString(R.string.draw_other_app_permission_denied),
@@ -681,6 +694,61 @@ class MainActivity : AppCompatActivity() {
     private fun startFloatingWidgetService() {
         startService(Intent(this@MainActivity, FloatingWidgetService::class.java))
         finish()
+    }
+
+    private fun showCustomUsingKotlinDsl() {
+        AppHead.create(R.drawable.ic_happy) {
+            headView {
+                layoutRes(R.layout.app_head, R.id.headImageView)
+                onClick { onFloatingDialog() }
+                onLongClick { Logger.d(TAG,"showCustomUsingKotlinDsl") }
+                alpha(0.9f)
+                allowBounce(true)
+                onFinishInflate {  Logger.d("onFinishHeadViewInflate")  }
+                onDismiss {  Logger.d("onDismiss") }
+                dismissOnClick(false)
+                preserveScreenLocation(false)
+            }
+//            badgeView {
+//                count("100")
+//                position(BadgeView.Position.TOP_END)
+//            }
+            dismissView {
+                alpha(0.5f)
+                scaleRatio(1.0)
+                drawableRes(R.drawable.ic_close_black)
+                onFinishInflate {   Logger.d("onFinishDismissViewInflate") }
+                setupImage { }
+            }
+        }.show(this)
+    }
+    private fun onFloatingDialog() {
+        Logger.d(TAG , "onFloatingWidgetClick click isViewCollapsed  = ( $isViewCollapsed )")
+
+        if (!isViewCollapsed) {
+
+            val translateIntent = Intent(this , Translate::class.java).apply {
+                action = Constants.FLOATING_DIALOG_ACTION_START
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(translateIntent)
+            isViewCollapsed = true
+
+//            collapsedView!!.visibility = View.GONE
+
+//            showSettingDialog()
+
+//            expandedView!!.visibility = View.VISIBLE
+        }else{
+            val translateIntent = Intent(this , Translate::class.java).apply {
+                action = Constants.FLOATING_DIALOG_ACTION_END
+//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(translateIntent)
+            isViewCollapsed = false
+
+        }
+
     }
 
 

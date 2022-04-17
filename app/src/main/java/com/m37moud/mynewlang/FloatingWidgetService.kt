@@ -12,8 +12,15 @@ import android.os.Handler
 import android.os.IBinder
 import android.view.*
 import android.widget.ImageView
+import com.m37moud.mynewlang.ui.Translate
+import com.m37moud.mynewlang.util.Constants.Companion.FLOATING_DIALOG_ACTION_END
+import com.m37moud.mynewlang.util.Constants.Companion.FLOATING_DIALOG_ACTION_START
+import com.m37moud.mynewlang.util.Logger
 
-class FloatingWidgetService : Service(), View.OnClickListener {
+private const val TAG = "FloatingWidgetService"
+
+
+class FloatingWidgetService : Service() {
     private var mWindowManager: WindowManager? = null
     private var mFloatingWidgetView: View? = null
     private var collapsedView: View? = null
@@ -40,15 +47,14 @@ class FloatingWidgetService : Service(), View.OnClickListener {
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         addRemoveView(inflater)
         addFloatingWidgetView(inflater)
-        implementClickListeners()
+//        implementClickListeners()
         implementTouchListenerToFloatingWidgetView()
     }
 
     private fun addRemoveView(inflater: LayoutInflater): View? {
         removeFloatingWidgetView = inflater.inflate(R.layout.remove_floating_layout, null)
 
-        val paramRemove: WindowManager.LayoutParams
-        paramRemove = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        val paramRemove: WindowManager.LayoutParams = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -77,8 +83,7 @@ class FloatingWidgetService : Service(), View.OnClickListener {
         //Inflate the floating view layout we created
         mFloatingWidgetView = inflater.inflate(R.layout.floating_widget_layout, null)
 
-        val params: WindowManager.LayoutParams
-        params = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        val params: WindowManager.LayoutParams = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -235,30 +240,29 @@ class FloatingWidgetService : Service(), View.OnClickListener {
         })
     }
 
-    private fun implementClickListeners() {
-        mFloatingWidgetView!!.findViewById<View>(R.id.image_close_float).setOnClickListener(this)
-        mFloatingWidgetView!!.findViewById<View>(R.id.linear_expanded).setOnClickListener(this)
-        mFloatingWidgetView!!.findViewById<View>(R.id.image_open).setOnClickListener(this)
-    }
+//    private fun implementClickListeners() {
+//        mFloatingWidgetView!!.findViewById<View>(R.id.image_close_float).setOnClickListener(this)
+//        mFloatingWidgetView!!.findViewById<View>(R.id.linear_expanded).setOnClickListener(this)
+//        mFloatingWidgetView!!.findViewById<View>(R.id.image_open).setOnClickListener(this)
+//    }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.image_close_float ->
-                stopSelf()
-            R.id.image_close_float -> {
-                collapsedView!!.visibility = View.VISIBLE
-                expandedView!!.visibility = View.GONE
-            }
-            R.id.image_open
-            -> {
-                val intent = Intent(this@FloatingWidgetService, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-
-                stopSelf()
-            }
-        }
-    }
+//    override fun onClick(v: View) {
+//        when (v.id) {
+//            R.id.image_close_float ->
+//                stopSelf()
+//            R.id.image_close_float -> {
+//                collapsedView!!.visibility = View.VISIBLE
+//                expandedView!!.visibility = View.GONE
+//            }
+//            R.id.image_open
+//            -> {
+//                val intent = Intent(this@FloatingWidgetService, MainActivity::class.java)
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                startActivity(intent)
+//                stopSelf()
+//            }
+//        }
+//    }
 
     private fun onFloatingWidgetLongClick() {
         val removeParams = removeFloatingWidgetView!!.layoutParams as WindowManager.LayoutParams
@@ -323,12 +327,13 @@ class FloatingWidgetService : Service(), View.OnClickListener {
         return scale * Math.exp(-0.055 * step) * Math.cos(0.08 * step)
     }
 
-    private val isViewCollapsed: Boolean
-        private get() = mFloatingWidgetView == null || mFloatingWidgetView!!.findViewById<View>(R.id.image_collapsed).visibility == View.VISIBLE
+    private var isViewCollapsed: Boolean = false
+//        get() = mFloatingWidgetView == null
+//                || mFloatingWidgetView!!.findViewById<View>(R.id.image_collapsed).visibility == View.VISIBLE
 
 
     private val statusBarHeight: Int
-        private get() = Math.ceil(25 * applicationContext.resources.displayMetrics.density.toDouble()).toInt()
+        get() = Math.ceil(25 * applicationContext.resources.displayMetrics.density.toDouble()).toInt()
 
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -352,11 +357,32 @@ class FloatingWidgetService : Service(), View.OnClickListener {
 
 
     private fun onFloatingWidgetClick() {
-        if (isViewCollapsed) {
+        Logger.d(TAG , "onFloatingWidgetClick click isViewCollapsed  = ( $isViewCollapsed )")
 
-            collapsedView!!.visibility = View.GONE
-            expandedView!!.visibility = View.VISIBLE
+        if (!isViewCollapsed) {
+
+            val translateIntent = Intent(this , Translate::class.java).apply {
+              action = FLOATING_DIALOG_ACTION_START
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(translateIntent)
+            isViewCollapsed = true
+
+//            collapsedView!!.visibility = View.GONE
+
+//            showSettingDialog()
+
+//            expandedView!!.visibility = View.VISIBLE
+        }else{
+            val translateIntent = Intent(this , Translate::class.java).apply {
+                action = FLOATING_DIALOG_ACTION_END
+//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(translateIntent)
+            isViewCollapsed = false
+
         }
+
     }
 
     override fun onDestroy() {

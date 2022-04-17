@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <RelativeLayout
@@ -19,19 +20,23 @@
 
             <ImageView
                 android:id="@+id/image_collapsed"
-                android:layout_width="@dimen/_100sdp"
-                android:layout_height="@dimen/_100sdp"
+                android:layout_width="@dimen/_70sdp"
+                android:layout_height="@dimen/_70sdp"
                 android:layout_marginTop="8dp"
-                android:src="@mipmap/ic_launcher_round"
+                app:tint="@color/darkorange"
+                android:src="@drawable/ic_happy"
+
                 tools:ignore="ContentDescription" />
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/image_close_floating"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/ic_happy"
+                android:layout_marginStart="@dimen/_70sdp"
+                android:layout_marginTop="@dimen/_3sdp"
+                app:tint="@color/darkorange"
+                android:background="@drawable/white_circle_shape"
                 android:src="@drawable/ic_close_white"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>

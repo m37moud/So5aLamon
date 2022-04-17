@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/_10sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:padding="@dimen/_10sdp"
+
+        >
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/original_txt_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_margin="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:backgroundTint="@color/orange"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/setting_container_share"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/darkorange"
+            app:strokeWidth="3dp">
+
+            <ScrollView
+                android:id="@+id/scroll_encrypt_txt"
+                android:layout_width="@dimen/_230sdp"
+                android:layout_height="@dimen/_150sdp"
+                android:padding="@dimen/_4sdp"
+
+
+
+                >
+                <EditText
+                    android:id="@+id/original_txt"
+                    style="@style/text_views"
+                    android:layout_width="@dimen/_210sdp"
+                    android:layout_height="@dimen/_120sdp"
+                    android:elevation="@dimen/_10sdp"
+                    android:hint="paste"
+
+                    android:padding="@dimen/_10sdp"
+                    android:textColorHint="@color/white"
+                    android:textSize="@dimen/_20ssp" />
+
+
+            </ScrollView>
+
+
+            <ImageButton
+                android:id="@+id/img_paste"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:backgroundTint="@android:color/transparent"
+                android:elevation="@dimen/_10sdp"
+                android:src="@drawable/ic_content_paste" />
+
+
+            <LinearLayout
+                android:id="@+id/chose_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+
+                android:background="@android:color/transparent"
+                android:orientation="horizontal"
+                >
+
+                <Button
+                    android:id="@+id/floating_encrypt_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:backgroundTint="@color/yellow"
+                    android:elevation="10dp"
+                    android:text="encrypt"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/floating_translate_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+
+                    android:backgroundTint="@color/yellow"
+                    android:elevation="10dp"
+                    android:text="translate"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/setting_container_share"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:backgroundTint="@color/yellow"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/setting_container_donate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/original_txt_container"
+            app:strokeColor="@color/darkorange"
+            app:strokeWidth="3dp">
+
+            <ScrollView
+                android:layout_width="@dimen/_230sdp"
+                android:layout_height="@dimen/_150sdp"
+                android:padding="@dimen/_4sdp"
+                android:scrollbars="vertical"
+
+                >
+
+                <TextView
+                    android:id="@+id/translated_txt"
+                    style="@style/text_views"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="@dimen/_10sdp"
+
+                    android:hint="paste"
+                    android:padding="@dimen/_10sdp"
+                    android:textColorHint="@color/white"
+                    android:textSize="@dimen/_20ssp" />
+
+            </ScrollView>
+
+            <ImageButton
+                android:id="@+id/img_copy"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_gravity="bottom|end"
+
+                android:backgroundTint="@android:color/transparent"
+                android:elevation="@dimen/_10sdp"
+                android:src="@drawable/ic_content_copy" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/setting_container_donate"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:backgroundTint="@color/yellow"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setting_container_share"
+            app:strokeColor="@color/darkorange"
+            app:strokeWidth="3dp">
+
+            <Button
+                android:id="@+id/okay_btn"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_gravity="bottom"
+                android:backgroundTint="@color/yellow"
+                android:elevation="10dp"
+                android:text="حسنا"
+
+                android:textColor="@color/white"
+                android:textSize="@dimen/_20sdp"
+                android:textStyle="bold" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

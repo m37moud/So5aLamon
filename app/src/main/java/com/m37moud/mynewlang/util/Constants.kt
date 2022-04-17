@@ -9,6 +9,10 @@ class Constants {
         const val ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE"
         const val ENCRYPT_ACTION = "encrypt_action"
 
+
+        const val FLOATING_DIALOG_ACTION_START = "FLOATING_DIALOG_ACTION_START"
+        const val FLOATING_DIALOG_ACTION_END = "FLOATING_DIALOG_ACTION_END"
+
         const val ENCRYPRAT_TXT = "encryptTxt"
         const val ORIGINAL_TXT = "originalTxt"
 
