@@ -1,13 +1,19 @@
 package com.m37moud.mynewlang
 
+import TranslateMessageIMPL
 import android.animation.Animator
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
@@ -15,12 +21,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorCompat
+import com.flipkart.chatheads.ui.ChatHeadContainer
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.m37moud.mynewlang.data.EncryptionMessageIMPL
+import com.m37moud.mynewlang.ui.DialogFragment
 import com.m37moud.mynewlang.ui.Translate
 import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Constants.Companion.ACTION_START_OR_RESUME_SERVICE
@@ -30,7 +39,12 @@ import com.m37moud.mynewlang.util.Constants.Companion.AD_REWARDEDED_ID
 import com.m37moud.mynewlang.util.Logger
 import com.sha.apphead.AppHead
 import com.sha.apphead.BadgeView
+import com.skydoves.elasticviews.ElasticAnimation
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_floating_translate.view.*
+import kotlinx.android.synthetic.main.layout_translate_app.view.*
+import kotlinx.android.synthetic.main.layout_translate_app.view.okay_btn
+import kotlinx.android.synthetic.main.layout_translate_app.view.translated_txt
 
 
 private const val TAG = "MainActivity"
@@ -53,10 +67,16 @@ class MainActivity : AppCompatActivity() {
     private var numOfShow = 0
 
 
-
     private var isViewCollapsed = false
 
     //end of ads refrence
+
+    //cliboard
+
+    private val mClipboardManager: ClipboardManager by lazy {
+        getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         setTheme(R.style.AppTheme)
@@ -104,6 +124,8 @@ class MainActivity : AppCompatActivity() {
 //        } else {
 //           startService(Intent(this, ClipboardService::class.java))
 //        }
+
+
     }
 
 
@@ -507,25 +529,31 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //fun to chose what service will start
+
+
     private fun startMyService() {
 
         Logger.d(TAG, "(startMyService) called.")
-        checkUserPermissionAndShowFB()
 
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            checkUserPermissionAndShowFB()
+        } else {
 //        startService(
 //            Intent(this@MainActivity, ClipboardService::class.java)
 //        )
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(Intent(this, ClipboardService::class.java)
-                .also {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(Intent(this, ClipboardService::class.java)
+                    .also {
+                        it.action = ACTION_START_OR_RESUME_SERVICE
+                    })
+
+            } else {
+                startService(Intent(this, ClipboardService::class.java).also {
                     it.action = ACTION_START_OR_RESUME_SERVICE
                 })
-
-        } else {
-            startService(Intent(this, ClipboardService::class.java).also {
-                it.action = ACTION_START_OR_RESUME_SERVICE
-            })
+            }
         }
         finish()
 
@@ -669,7 +697,7 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE)
         } else
 //            startFloatingWidgetService()
-        showCustomUsingKotlinDsl()
+            showCustomUsingKotlinDsl()
 
 
     }
@@ -678,8 +706,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK)
 //                startFloatingWidgetService()
-            showCustomUsingKotlinDsl()
-
+                showCustomUsingKotlinDsl()
             else
                 Toast.makeText(
                     this,
@@ -699,15 +726,16 @@ class MainActivity : AppCompatActivity() {
     private fun showCustomUsingKotlinDsl() {
         AppHead.create(R.drawable.ic_happy) {
             headView {
+
                 layoutRes(R.layout.app_head, R.id.headImageView)
                 onClick { onFloatingDialog() }
-                onLongClick { Logger.d(TAG,"showCustomUsingKotlinDsl") }
+                onLongClick { Logger.d(TAG, "showCustomUsingKotlinDsl") }
                 alpha(0.9f)
-                allowBounce(true)
-                onFinishInflate {  Logger.d("onFinishHeadViewInflate")  }
-                onDismiss {  Logger.d("onDismiss") }
-                dismissOnClick(false)
-                preserveScreenLocation(false)
+                allowBounce(false)
+                onFinishInflate { Logger.d(TAG, "onFinishHeadViewInflate") }
+                onDismiss { Logger.d(TAG, "onDismiss") }
+                dismissOnClick(true)
+                preserveScreenLocation(true)
             }
 //            badgeView {
 //                count("100")
@@ -717,21 +745,162 @@ class MainActivity : AppCompatActivity() {
                 alpha(0.5f)
                 scaleRatio(1.0)
                 drawableRes(R.drawable.ic_close_black)
-                onFinishInflate {   Logger.d("onFinishDismissViewInflate") }
+                onFinishInflate { Logger.d(TAG, "onFinishDismissViewInflate") }
                 setupImage { }
             }
         }.show(this)
     }
+
+
+    private fun showFloatingDialog(show: Boolean) {
+        Logger.d(TAG, "showFloatingDialog ")
+        val copiedTxt = getCopiedTxtFromClipboard()
+
+        var translateTXT = ""
+        val builder = AlertDialog.Builder(this)
+
+        val itemView: View =
+            LayoutInflater.from(this).inflate(R.layout.layout_floating_translate, null)
+
+
+        //get copied text if found
+        if (copiedTxt.isNotBlank()) {
+            itemView.img_paste.visibility = View.VISIBLE
+            itemView.img_paste.setOnClickListener {
+                itemView.floating_original_txt.setText(copiedTxt)
+
+            }
+        }
+
+
+        //when translate button pressed
+        itemView.floating_translate_btn.setOnClickListener {
+            val originalTXT = itemView.floating_original_txt.text.toString()
+            if (originalTXT.isNotBlank()) {
+                translateTXT = translateTxt(originalTXT)
+                itemView.floating_translated_txt.text = translateTXT
+                itemView.img_copy.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(
+                    this,
+                    "لا يوجد نص للتحويل",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+        }
+
+        //when encrypt button pressed
+        itemView.floating_encrypt_btn.setOnClickListener {
+            val originalTXT = itemView.floating_original_txt.text.toString()
+            if (originalTXT.isNotBlank()) {
+                translateTXT = encryptTxt(originalTXT)
+                itemView.floating_translated_txt.text = translateTXT
+                itemView.img_copy.visibility = View.VISIBLE
+
+            } else {
+                Toast.makeText(
+                    this,
+                    "لا يوجد نص للتحويل",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+        }
+
+        itemView.img_copy.setOnClickListener {
+            val txtToCopy = itemView.floating_translated_txt.text.toString()
+            doCopy(txtToCopy)
+
+
+
+        }
+
+
+//        Logger.d(TAG, "(showSettingDialog) will set this $translateTXT")
+
+//
+//        val popUp = PopupWindow(
+//            itemView, LinearLayout.LayoutParams.WRAP_CONTENT,
+//            LinearLayout.LayoutParams.WRAP_CONTENT, false
+//        )
+//        popUp.isTouchable = true
+//        popUp.isFocusable = true
+//        popUp.isOutsideTouchable = true
+//        popUp.showAsDropDown(image_collapsed)
+
+        builder.setView(itemView)
+        val translateDialog = builder.create()
+//        translateDialog.setCanceledOnTouchOutside(false)
+        translateDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val window = translateDialog.window
+        window?.setGravity(Gravity.CENTER)
+        window?.attributes?.windowAnimations = R.style.DialogAnimation
+
+        translateDialog.setCancelable(false)
+        translateDialog.setCanceledOnTouchOutside(false)
+        itemView.okay_btn.setOnClickListener {
+            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
+                .setOnFinishListener {
+                    translateDialog.dismiss()
+
+                }.doAction()
+
+
+        }
+
+        isViewCollapsed = when (show) {
+            false -> {
+                translateDialog.show()
+                true
+
+            }
+            true -> {
+                translateDialog.dismiss()
+                false
+
+                //                  finishAfterTransition()
+
+            }
+        }
+        translateDialog.setOnDismissListener {
+            Logger.d(TAG, "showFloatingDialog ")
+            isViewCollapsed = false
+
+//            sendBroadcast(Intent(Constants.ENCRYPT_ACTION).putExtra("copied", true))
+
+        }
+
+
+    }
+
+    private fun translateTxt(originalTXT: String): String {
+        val translate = TranslateMessageIMPL()
+        return translate.translateTxt(originalTXT)
+    }
+
+    private fun encryptTxt(originalTXT: String): String {
+        val encryption = EncryptionMessageIMPL()
+        return encryption.encryptTxt(originalTXT)
+    }
+
+
     private fun onFloatingDialog() {
-        Logger.d(TAG , "onFloatingWidgetClick click isViewCollapsed  = ( $isViewCollapsed )")
+        Logger.d(TAG, "onFloatingWidgetClick click isViewCollapsed  = ( $isViewCollapsed )")
 
         if (!isViewCollapsed) {
-
-            val translateIntent = Intent(this , Translate::class.java).apply {
+//
+            val translateIntent = Intent(this, Translate::class.java).apply {
                 action = Constants.FLOATING_DIALOG_ACTION_START
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             startActivity(translateIntent)
+//            supportFragmentManager.fragments.add(DialogFragment.newInstance("tst 1", "tst 2"))
+
+//val frag = DialogFragment.newInstance("tst 1", "tst 2")
+//            val f = supportFragmentManager.beginTransaction().add(frag,"ok").commit()
+
+
             isViewCollapsed = true
 
 //            collapsedView!!.visibility = View.GONE
@@ -739,14 +908,48 @@ class MainActivity : AppCompatActivity() {
 //            showSettingDialog()
 
 //            expandedView!!.visibility = View.VISIBLE
-        }else{
-            val translateIntent = Intent(this , Translate::class.java).apply {
+        } else {
+            val translateIntent = Intent(this, Translate::class.java).apply {
                 action = Constants.FLOATING_DIALOG_ACTION_END
 //                flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             startActivity(translateIntent)
             isViewCollapsed = false
 
+        }
+
+    }
+
+    private fun getCopiedTxtFromClipboard(): String {
+        return try {
+            val clip: ClipData = mClipboardManager.primaryClip!!
+            (clip.getItemAt(0).text).toString()
+        } catch (e: Exception) {
+            Logger.d(TAG, e.message)
+            ""
+
+        }
+
+    }
+
+    private fun doCopy(textToCopy: String) {
+        try {
+
+            val clip = ClipData.newPlainText("toPaste", textToCopy)
+            mClipboardManager.setPrimaryClip(clip)
+            Toast.makeText(
+                this,
+                "تم النسخ",
+                Toast.LENGTH_SHORT
+            ).show()
+
+        } catch (e: Exception) {
+            Logger.d(TAG, e.message)
+            Toast.makeText(
+                this,
+                "some thing go wrong",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
     }

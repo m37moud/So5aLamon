@@ -26,6 +26,7 @@
             android:layout_marginTop="@dimen/_18sdp"
             android:backgroundTint="@color/orange"
             app:cardCornerRadius="10dp"
+
             app:layout_constraintBottom_toTopOf="@+id/setting_container_share"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -34,78 +35,75 @@
             app:strokeColor="@color/darkorange"
             app:strokeWidth="3dp">
 
-            <ScrollView
-                android:id="@+id/scroll_encrypt_txt"
-                android:layout_width="@dimen/_230sdp"
-                android:layout_height="@dimen/_150sdp"
-                android:padding="@dimen/_4sdp"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
 
-
-
-                >
                 <EditText
-                    android:id="@+id/original_txt"
+                    android:id="@+id/floating_original_txt"
                     style="@style/text_views"
-                    android:layout_width="@dimen/_210sdp"
-                    android:layout_height="@dimen/_120sdp"
+                    android:layout_width="@dimen/_230sdp"
+                    android:layout_height="@dimen/_150sdp"
                     android:elevation="@dimen/_10sdp"
                     android:hint="paste"
-
+                    android:inputType="textMultiLine"
                     android:padding="@dimen/_10sdp"
+
+                    android:scrollbars="vertical"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/_20ssp" />
 
+                <LinearLayout
+                    android:id="@+id/chose_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-            </ScrollView>
+                    <Button
+                        android:id="@+id/floating_encrypt_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:backgroundTint="@color/yellow"
+                        android:elevation="10dp"
+                        android:text="encrypt"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/floating_translate_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+
+                        android:backgroundTint="@color/yellow"
+                        android:elevation="10dp"
+                        android:text="translate"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
 
             <ImageButton
                 android:id="@+id/img_paste"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_margin="@dimen/_10sdp"
                 android:backgroundTint="@android:color/transparent"
                 android:elevation="@dimen/_10sdp"
-                android:src="@drawable/ic_content_paste" />
-
-
-            <LinearLayout
-                android:id="@+id/chose_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center"
-
-                android:background="@android:color/transparent"
-                android:orientation="horizontal"
-                >
-
-                <Button
-                    android:id="@+id/floating_encrypt_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginEnd="@dimen/_4sdp"
-                    android:backgroundTint="@color/yellow"
-                    android:elevation="10dp"
-                    android:text="encrypt"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/floating_translate_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-
-                    android:backgroundTint="@color/yellow"
-                    android:elevation="10dp"
-                    android:text="translate"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
+                android:src="@drawable/ic_content_paste"
+                android:visibility="gone" />
 
 
         </com.google.android.material.card.MaterialCardView>
@@ -132,18 +130,16 @@
             <ScrollView
                 android:layout_width="@dimen/_230sdp"
                 android:layout_height="@dimen/_150sdp"
-                android:padding="@dimen/_4sdp"
                 android:scrollbars="vertical"
 
                 >
 
                 <TextView
-                    android:id="@+id/translated_txt"
+                    android:id="@+id/floating_translated_txt"
                     style="@style/text_views"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:elevation="@dimen/_10sdp"
-
                     android:hint="paste"
                     android:padding="@dimen/_10sdp"
                     android:textColorHint="@color/white"
@@ -153,12 +149,11 @@
 
             <ImageButton
                 android:id="@+id/img_copy"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10sdp"
                 android:layout_gravity="bottom|end"
-
+                android:layout_margin="@dimen/_10sdp"
+                android:visibility="gone"
                 android:backgroundTint="@android:color/transparent"
                 android:elevation="@dimen/_10sdp"
                 android:src="@drawable/ic_content_copy" />

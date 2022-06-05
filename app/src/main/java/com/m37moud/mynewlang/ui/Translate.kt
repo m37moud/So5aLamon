@@ -2,6 +2,8 @@ package com.m37moud.mynewlang.ui
 
 import TranslateMessageIMPL
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -10,12 +12,14 @@ import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.m37moud.mynewlang.R
+import com.m37moud.mynewlang.data.EncryptionMessageIMPL
 import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Constants.Companion.FLOATING_DIALOG_ACTION_END
 import com.m37moud.mynewlang.util.Constants.Companion.FLOATING_DIALOG_ACTION_START
 import com.m37moud.mynewlang.util.Constants.Companion.ORIGINAL_TXT
 import com.m37moud.mynewlang.util.InvalidTextException
 import com.m37moud.mynewlang.util.Logger
+import com.sha.apphead.AppHead
 import com.skydoves.elasticviews.ElasticAnimation
 import kotlinx.android.synthetic.main.floating_widget_layout.*
 import kotlinx.android.synthetic.main.layout_floating_translate.view.*
@@ -30,6 +34,11 @@ class Translate : AppCompatActivity() {
     private var encryptTXT = ""
     private var translateTXT = ""
     private lateinit var translate: TranslateMessageIMPL
+    private var isViewCollapsed = false
+
+    private val mClipboardManager: ClipboardManager by lazy {
+        getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,24 +102,65 @@ class Translate : AppCompatActivity() {
     private fun showFloatingDialog(action: String) {
         Logger.d(TAG, "showFloatingDialog ")
 
+        var translateTXT = ""
         val builder = AlertDialog.Builder(this)
 
         val itemView: View =
             LayoutInflater.from(this).inflate(R.layout.layout_floating_translate, null)
 
-      val  originalTXT = itemView.original_txt.text.toString()
 
+
+
+        //get copied text if found
+        if (getCopiedTxtFromClipboard().isNotBlank()) {
+            itemView.img_paste.visibility = View.VISIBLE
+            itemView.img_paste.setOnClickListener {
+                itemView.floating_original_txt.setText(getCopiedTxtFromClipboard())
+
+            }
+        }
+
+
+        //when translate button pressed
         itemView.floating_translate_btn.setOnClickListener {
-            translateTXT =  translateTxt(originalTXT)
+            val originalTXT = itemView.floating_original_txt.text.toString()
+            if (originalTXT.isNotBlank()) {
+                translateTXT = translateTxt(originalTXT)
+                itemView.floating_translated_txt.text = translateTXT
+                itemView.img_copy.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(
+                    this,
+                    "لا يوجد نص للتحويل",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
 
         }
 
+        //when encrypt button pressed
         itemView.floating_encrypt_btn.setOnClickListener {
-            translateTXT = translateTxt(originalTXT)
+            val originalTXT = itemView.floating_original_txt.text.toString()
+            if (originalTXT.isNotBlank()) {
+                translateTXT = encryptTxt(originalTXT)
+                itemView.floating_translated_txt.text = translateTXT
+                itemView.img_copy.visibility = View.VISIBLE
+
+            } else {
+                Toast.makeText(
+                    this,
+                    "لا يوجد نص للتحويل",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
 
         }
 
-        itemView.translated_txt.text = translateTXT
+        itemView.img_copy.setOnClickListener {
+            val txtToCopy = itemView.floating_translated_txt.text.toString()
+            doCopy(txtToCopy)
+        }
+
 
 //        Logger.d(TAG, "(showSettingDialog) will set this $translateTXT")
 
@@ -143,7 +193,6 @@ class Translate : AppCompatActivity() {
 
 
         }
-
           when (action) {
               FLOATING_DIALOG_ACTION_START -> {
                   translateDialog.show()
@@ -152,16 +201,105 @@ class Translate : AppCompatActivity() {
               }
               FLOATING_DIALOG_ACTION_END -> {
                   translateDialog.dismiss()
-//                  finishAfterTransition()
+                  finish()
 
               }
           }
         translateDialog.setOnDismissListener {
             Logger.d(TAG, "showFloatingDialog ")
 //            sendBroadcast(Intent(Constants.ENCRYPT_ACTION).putExtra("copied", true))
+            showCustomUsingKotlinDsl()
 
         }
 
+
+    }
+    private fun showCustomUsingKotlinDsl() {
+        AppHead.create(R.drawable.ic_happy) {
+            headView {
+
+                layoutRes(R.layout.app_head, R.id.headImageView)
+                onClick { onFloatingDialog() }
+                onLongClick { Logger.d(TAG, "showCustomUsingKotlinDsl") }
+                alpha(0.9f)
+                allowBounce(false)
+                onFinishInflate { Logger.d(TAG, "onFinishHeadViewInflate") }
+                onDismiss { Logger.d(TAG, "onDismiss") }
+                dismissOnClick(true)
+                preserveScreenLocation(true)
+            }
+//            badgeView {
+//                count("100")
+//                position(BadgeView.Position.TOP_END)
+//            }
+            dismissView {
+                alpha(0.5f)
+                scaleRatio(1.0)
+                drawableRes(R.drawable.ic_close_black)
+                onFinishInflate { Logger.d(TAG, "onFinishDismissViewInflate") }
+                setupImage { }
+            }
+        }.show(this)
+    }
+    private fun onFloatingDialog() {
+        Logger.d(TAG, "onFloatingWidgetClick click isViewCollapsed  = ( $isViewCollapsed )")
+
+        if (!isViewCollapsed) {
+
+            val translateIntent = Intent(this, Translate::class.java).apply {
+                action = Constants.FLOATING_DIALOG_ACTION_START
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            startActivity(translateIntent)
+            isViewCollapsed = true
+
+//            collapsedView!!.visibility = View.GONE
+
+//            showSettingDialog()
+
+//            expandedView!!.visibility = View.VISIBLE
+        } else {
+            val translateIntent = Intent(this, Translate::class.java).apply {
+                action = Constants.FLOATING_DIALOG_ACTION_END
+//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(translateIntent)
+            isViewCollapsed = false
+
+        }
+
+    }
+
+    private fun getCopiedTxtFromClipboard(): String {
+        return try {
+            val clip: ClipData = mClipboardManager.primaryClip!!
+            (clip.getItemAt(0).text).toString()
+        } catch (e: Exception) {
+            Logger.d(TAG, e.message)
+            ""
+
+        }
+
+    }
+
+    private fun doCopy(textToCopy: String) {
+        try {
+
+            val clip = ClipData.newPlainText("toPaste", textToCopy)
+            mClipboardManager.setPrimaryClip(clip)
+            Toast.makeText(
+                this,
+                "تم النسخ",
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {
+            Logger.d(TAG, e.message)
+            Toast.makeText(
+                this,
+                "some thing go wrong",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
     }
 
@@ -221,8 +359,19 @@ class Translate : AppCompatActivity() {
 
     }
 
-    private fun translateTxt(text: String): String {
 
-        return translate.translateTxt(text)
+    private fun translateTxt(originalTXT: String): String {
+        val translate = TranslateMessageIMPL()
+        return translate.translateTxt(originalTXT)
     }
+
+    private fun encryptTxt(originalTXT: String): String {
+        val encryption = EncryptionMessageIMPL()
+        return encryption.encryptTxt(originalTXT)
+    }
+
+//    private fun translateTxt(text: String): String {
+//
+//        return translate.translateTxt(text)
+//    }
 }

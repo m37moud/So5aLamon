@@ -4,6 +4,8 @@
     <string name="draw_other_app_permission_denied">permisssion is denied</string>
     <string name="draggable_details">details</string>
     <string name="draggable_button">drag</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
