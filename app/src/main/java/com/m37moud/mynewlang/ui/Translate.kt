@@ -129,24 +129,22 @@ class Translate : AppCompatActivity() {
             ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
                 .setOnFinishListener {
                     itemView.floating_original_txt.setText("")
-
+                    itemView.floating_translated_txt.text = ""
                 }.doAction()
 
         }
 
         itemView.floating_original_txt.addTextChangedListener {
-            if(itemView.floating_original_txt.text.toString().isNullOrEmpty())
-            {
+            if (itemView.floating_original_txt.text.toString().isNullOrEmpty()) {
                 itemView.img_undo.visibility = View.INVISIBLE
                 itemView.img_paste.visibility = View.VISIBLE
-            }else{
+            } else {
                 itemView.img_undo.visibility = View.VISIBLE
                 itemView.img_paste.visibility = View.INVISIBLE
             }
 
 
         }
-
 
 
         //when translate button pressed
