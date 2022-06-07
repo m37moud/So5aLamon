@@ -130,6 +130,7 @@ class Translate : AppCompatActivity() {
                 .setOnFinishListener {
                     itemView.floating_original_txt.setText("")
                     itemView.floating_translated_txt.text = ""
+                    itemView.img_copy.visibility = View.INVISIBLE
                 }.doAction()
 
         }
