@@ -8,6 +8,7 @@ class EncryptionMessageIMPL {
     //        val text = "سدد جون الساقة بالون سسبوع ألبوم ستنين أمازون سو أرانب سهر شماسي" //12 word
     private val aList = listOf<String>("البوم", "امازون", "ارانب")
     private val aaList = listOf<String>("البوم", "أمازون", "أرانب")
+    private val aaaList = listOf<String>("البوم", "أمازون", "أرانب")
     private val bList = listOf<String>("بالون", "بليلة", "بطاطا")
     private val tList = listOf<String>("تمر")
     private val thList = listOf<String>("ثمبوكسة")
@@ -40,6 +41,7 @@ class EncryptionMessageIMPL {
     init {
         suggestWordList["ا"] = aList
         suggestWordList["أ"] = aaList
+        suggestWordList["آ"] = aaaList
         suggestWordList["ب"] = bList
         suggestWordList["ت"] = tList
         suggestWordList["ث"] = thList

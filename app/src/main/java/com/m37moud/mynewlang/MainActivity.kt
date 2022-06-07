@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorCompat
+import androidx.core.view.isVisible
 import com.flipkart.chatheads.ui.ChatHeadContainer
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -36,6 +37,7 @@ import com.m37moud.mynewlang.util.Constants.Companion.ACTION_START_OR_RESUME_SER
 import com.m37moud.mynewlang.util.Constants.Companion.AD_BANNER_ID
 import com.m37moud.mynewlang.util.Constants.Companion.AD_InterstitialAd_ID
 import com.m37moud.mynewlang.util.Constants.Companion.AD_REWARDEDED_ID
+import com.m37moud.mynewlang.util.InvalidTextException
 import com.m37moud.mynewlang.util.Logger
 import com.sha.apphead.AppHead
 import com.sha.apphead.BadgeView
@@ -752,9 +754,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun showFloatingDialog(show: Boolean) {
+    private fun showFloatingDialog(action: String) {
+
         Logger.d(TAG, "showFloatingDialog ")
-        val copiedTxt = getCopiedTxtFromClipboard()
 
         var translateTXT = ""
         val builder = AlertDialog.Builder(this)
@@ -764,10 +766,14 @@ class MainActivity : AppCompatActivity() {
 
 
         //get copied text if found
-        if (copiedTxt.isNotBlank()) {
+        if (getCopiedTxtFromClipboard().isNotBlank()) {
             itemView.img_paste.visibility = View.VISIBLE
             itemView.img_paste.setOnClickListener {
-                itemView.floating_original_txt.setText(copiedTxt)
+                ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
+                    .setOnFinishListener {
+                        itemView.floating_original_txt.setText(getCopiedTxtFromClipboard())
+
+                    }.doAction()
 
             }
         }
@@ -777,9 +783,17 @@ class MainActivity : AppCompatActivity() {
         itemView.floating_translate_btn.setOnClickListener {
             val originalTXT = itemView.floating_original_txt.text.toString()
             if (originalTXT.isNotBlank()) {
-                translateTXT = translateTxt(originalTXT)
-                itemView.floating_translated_txt.text = translateTXT
-                itemView.img_copy.visibility = View.VISIBLE
+                try {
+                    translateTXT = translateTxt(originalTXT)
+                    itemView.floating_translated_txt.text = translateTXT
+                    itemView.img_copy.visibility = View.VISIBLE
+                } catch (e: InvalidTextException) {
+                    Toast.makeText(
+                        this,
+                        e.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             } else {
                 Toast.makeText(
                     this,
@@ -809,25 +823,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         itemView.img_copy.setOnClickListener {
-            val txtToCopy = itemView.floating_translated_txt.text.toString()
-            doCopy(txtToCopy)
 
+            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
+                .setOnFinishListener {
+                    val txtToCopy = itemView.floating_translated_txt.text.toString()
+
+                    doCopy(txtToCopy)
+                    if (!itemView.img_paste.isVisible)
+                        itemView.img_paste.visibility = View.VISIBLE
+                }.doAction()
 
 
         }
 
-
-//        Logger.d(TAG, "(showSettingDialog) will set this $translateTXT")
-
-//
-//        val popUp = PopupWindow(
-//            itemView, LinearLayout.LayoutParams.WRAP_CONTENT,
-//            LinearLayout.LayoutParams.WRAP_CONTENT, false
-//        )
-//        popUp.isTouchable = true
-//        popUp.isFocusable = true
-//        popUp.isOutsideTouchable = true
-//        popUp.showAsDropDown(image_collapsed)
 
         builder.setView(itemView)
         val translateDialog = builder.create()
@@ -848,26 +856,23 @@ class MainActivity : AppCompatActivity() {
 
 
         }
-
-        isViewCollapsed = when (show) {
-            false -> {
+        when (action) {
+            Constants.FLOATING_DIALOG_ACTION_START -> {
                 translateDialog.show()
-                true
+
 
             }
-            true -> {
+            Constants.FLOATING_DIALOG_ACTION_END -> {
                 translateDialog.dismiss()
-                false
-
-                //                  finishAfterTransition()
+//                  finishAfterTransition()
 
             }
         }
         translateDialog.setOnDismissListener {
             Logger.d(TAG, "showFloatingDialog ")
-            isViewCollapsed = false
-
 //            sendBroadcast(Intent(Constants.ENCRYPT_ACTION).putExtra("copied", true))
+            showCustomUsingKotlinDsl()
+            finishAfterTransition()
 
         }
 

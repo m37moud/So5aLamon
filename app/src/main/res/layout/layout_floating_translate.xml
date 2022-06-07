@@ -47,7 +47,6 @@
                     android:layout_width="@dimen/_230sdp"
                     android:layout_height="@dimen/_150sdp"
                     android:elevation="@dimen/_10sdp"
-                    android:hint="paste"
                     android:inputType="textMultiLine"
                     android:padding="@dimen/_10sdp"
 
@@ -105,6 +104,18 @@
                 android:src="@drawable/ic_content_paste"
                 android:visibility="gone" />
 
+            <ImageButton
+                android:id="@+id/img_undo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/_10sdp"
+                android:backgroundTint="@android:color/transparent"
+                android:elevation="@dimen/_10sdp"
+                android:src="@drawable/ic_undo"
+                android:visibility="gone" />
+
+
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -140,7 +151,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:elevation="@dimen/_10sdp"
-                    android:hint="paste"
                     android:padding="@dimen/_10sdp"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/_20ssp" />

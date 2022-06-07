@@ -7,10 +7,11 @@
 
     <ImageView
         android:id="@+id/headImageView"
-        android:layout_width="@dimen/_70sdp"
-        android:layout_height="@dimen/_70sdp"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
         app:srcCompat="@drawable/ic_happy"
         app:tint="@color/darkorange"
+        android:background="@drawable/app_head_background"
         android:layout_margin="4dp"
         />
 </com.sha.apphead.HeadView>
