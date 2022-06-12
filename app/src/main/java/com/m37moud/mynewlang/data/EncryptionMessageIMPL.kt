@@ -1,14 +1,16 @@
 package com.m37moud.mynewlang.data
+
 class EncryptionMessageIMPL {
     private val char = "س"
     private val char2 = "م"
     private val wordList = mutableListOf<String>()
     private val charList = mutableListOf<String>()
     private val suggestWordList = mutableMapOf<String, List<String>>()
+
     //        val text = "سدد جون الساقة بالون سسبوع ألبوم ستنين أمازون سو أرانب سهر شماسي" //12 word
     private val aList = listOf<String>("البوم", "امازون", "ارانب")
     private val aaList = listOf<String>("البوم", "أمازون", "أرانب")
-    private val aaaList = listOf<String>("البوم", "أمازون", "أرانب")
+    private val aaaList = listOf<String>("البوم", "امازون", "ارانب")
     private val bList = listOf<String>("بالون", "بليلة", "بطاطا")
     private val tList = listOf<String>("تمر")
     private val thList = listOf<String>("ثمبوكسة")
@@ -36,12 +38,14 @@ class EncryptionMessageIMPL {
     private val hhList = listOf<String>("هرم")
     private val oList = listOf<String>("وزة")
     private val iList = listOf<String>("يمامة")
+    private val numList = listOf<String>("طيارة", "بالونة", "كورة")
+    private val numList2 = listOf<String>("طيارات", "بالونات", "كورات")
 
 
     init {
         suggestWordList["ا"] = aList
         suggestWordList["أ"] = aaList
-        suggestWordList["آ"] = aaaList
+        suggestWordList["إ"] = aaaList
         suggestWordList["ب"] = bList
         suggestWordList["ت"] = tList
         suggestWordList["ث"] = thList
@@ -70,6 +74,8 @@ class EncryptionMessageIMPL {
         suggestWordList["و"] = oList
         suggestWordList["ي"] = iList
         suggestWordList["ى"] = iList
+        suggestWordList["-"] = numList
+        suggestWordList["*"] = numList2
     }
 
 
@@ -87,24 +93,30 @@ class EncryptionMessageIMPL {
         println(t.toString())
 
 //        loop@repeat(t.size)
-        loop@for (i in t) {
+        loop@ for (i in t) {
 
-            if ( !(i.filter { it in 'أ'..'ي' }.length == i.length)) {
+            if (!(i.filter { it in 'أ'..'ي' }.length == i.length)) {
                 continue@loop
             }
             println(i)
-             if (i[0] == 'ا' && i[1] == 'ل') {
+            if (i[0] == 'ا' && i[1] == 'ل') {
 //                wordList.add(char.plus(t[i].substring(1)))
                 wordList.add(removeThirdCharChar(i))
 
                 charList.add(i[2].toString())
+            } else if (i in 0..9) {
+                wordList.add(i.toString())
+                if (i.length > 1)
+                    charList.add("*")
+                else charList.add("-")
+
             } else {
 
                 if (i.startsWith(char)) {
 
                     wordList.add(char2.plus(i.substring(1)))
                     charList.add(i[0].toString())
-                }else{
+                } else {
                     wordList.add(char.plus(i.substring(1)))
                     charList.add(i[0].toString())
                 }
@@ -121,9 +133,9 @@ class EncryptionMessageIMPL {
 
     private fun removeThirdCharChar(txt: String): String {
         val n = txt.substring(2)
-        return if (n.startsWith(char)){
+        return if (n.startsWith(char)) {
             "ال".plus(char2.plus(n.substring(1)))
-        }else{
+        } else {
             "ال".plus(char.plus(n.substring(1)))
         }
 

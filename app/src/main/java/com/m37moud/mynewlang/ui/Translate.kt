@@ -199,7 +199,10 @@ class Translate : AppCompatActivity() {
 
                     doCopy(txtToCopy)
                     if (!itemView.img_paste.isVisible)
+                    {
                         itemView.img_paste.visibility = View.VISIBLE
+                        itemView.img_undo.visibility = View.INVISIBLE
+                    }
                 }.doAction()
 
 

@@ -1,4 +1,5 @@
 import com.m37moud.mynewlang.util.InvalidTextException
+import com.m37moud.mynewlang.util.Logger
 
 class TranslateMessageIMPL {
     private val originalList = mutableListOf<String>()
@@ -59,22 +60,28 @@ class TranslateMessageIMPL {
     private fun getOriginalWord(wordList: List<String>, charList: List<String>): List<String> {
         val list = mutableListOf<String>()
         repeat(charList.size) { i ->
-            println(wordList[i])
-            println(charList[i])
+            println("word : "+wordList[i])
+            println("char : " +charList[i])
+            try {
+                val word = if (wordList[i].length <=1) {
+                    println("if size <= 1 ")
+                    charList[i].plus(wordList[i])
+                }
+                else if (wordList[i][0] == 'ا' && wordList[i][1] == 'ل') {
+                    println("if true ")
+                    addThirdChar(wordList[i], charList[i])
 
-            val word = if (wordList[i].isEmpty()) {
-                println("if size == 0 ")
-                charList[i].plus(wordList[i])
-            } else if (wordList[i][0] == 'ا' && wordList[i][1] == 'ل') {
-                println("if true ")
-                addThirdChar(wordList[i], charList[i])
+                } else {
+                    println("if false ")
+                    charList[i].plus(wordList[i])
+                }
+                list.add(word)
 
-            } else {
-                println("if false ")
-                charList[i].plus(wordList[i])
+            } catch (e: Exception) {
+                Logger.e("TranslateMessageIMPL", e.message)
+                Logger.i("TranslateMessageIMPL","fail translate at ${wordList[i]} ")
             }
 
-            list.add(word)
 
         }
 
