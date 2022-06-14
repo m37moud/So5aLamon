@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">MyNewLang</string>
-    <string name="OK">حسنا</string>
-    <string name="draw_other_app_permission_denied">permisssion is denied</string>
-    <string name="draggable_details">details</string>
-    <string name="draggable_button">drag</string>
+    <string name="app_name">Sa5a Lamon</string>
+    <string name="OK">ok</string>
+    <string name="draw_other_app_permission_denied" translatable="false">permission is denied</string>
+    <string name="draggable_details" translatable="false">details</string>
+    <string name="draggable_button" translatable="false">drag</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
 
 </resources>

@@ -1,6 +1,7 @@
 package com.m37moud.mynewlang.ui
 
 import TranslateMessageIMPL
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.FragmentActivity
 import com.m37moud.mynewlang.R
 import com.m37moud.mynewlang.data.EncryptionMessageIMPL
 import com.m37moud.mynewlang.util.Constants
@@ -46,7 +48,7 @@ class Translate : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        NotificationManagerCompat.from(this).cancel(1001)
-
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_translate)
 
         val intent = intent
@@ -218,7 +220,7 @@ class Translate : AppCompatActivity() {
         val window = translateDialog.window
         window?.setGravity(Gravity.CENTER)
         window?.attributes?.windowAnimations = R.style.DialogAnimation
-
+        translateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         translateDialog.setCancelable(false)
         translateDialog.setCanceledOnTouchOutside(false)
         itemView.okay_btn.setOnClickListener {
@@ -238,7 +240,7 @@ class Translate : AppCompatActivity() {
             }
             FLOATING_DIALOG_ACTION_END -> {
                 translateDialog.dismiss()
-//                  finishAfterTransition()
+                  finishAfterTransition()
 
             }
         }
@@ -265,7 +267,7 @@ class Translate : AppCompatActivity() {
                 onFinishInflate { Logger.d(TAG, "onFinishHeadViewInflate") }
                 onDismiss { Logger.d(TAG, "onDismiss") }
                 dismissOnClick(true)
-                preserveScreenLocation(false)
+                preserveScreenLocation(true)
 
             }
 //            badgeView {
@@ -279,7 +281,7 @@ class Translate : AppCompatActivity() {
                 onFinishInflate { Logger.d(TAG, "onFinishDismissViewInflate") }
                 setupImage { }
             }
-        }.show(this)
+        }.show(this )
     }
 
     private fun onFloatingDialog() {
@@ -288,7 +290,7 @@ class Translate : AppCompatActivity() {
         if (!isViewCollapsed) {
 
             val translateIntent = Intent(this, Translate::class.java).apply {
-                action = Constants.FLOATING_DIALOG_ACTION_START
+                action = FLOATING_DIALOG_ACTION_START
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             startActivity(translateIntent)
@@ -302,7 +304,7 @@ class Translate : AppCompatActivity() {
         } else {
             val translateIntent = Intent(this, Translate::class.java).apply {
                 action = Constants.FLOATING_DIALOG_ACTION_END
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             startActivity(translateIntent)
             isViewCollapsed = false

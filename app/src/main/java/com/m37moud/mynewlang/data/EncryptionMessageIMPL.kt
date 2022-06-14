@@ -1,5 +1,7 @@
 package com.m37moud.mynewlang.data
 
+import com.m37moud.mynewlang.util.intOrString
+
 class EncryptionMessageIMPL {
     private val char = "س"
     private val char2 = "م"
@@ -84,6 +86,8 @@ class EncryptionMessageIMPL {
         return extractWords(txt).joinToString(" ")
     }
 
+
+
     private fun extractWords(txt: String): List<String> {
 //        val t = txt.split(" ")
         val t = txt.trim().split(" ").filter {
@@ -92,10 +96,13 @@ class EncryptionMessageIMPL {
         }
         println(t.toString())
 
-//        loop@repeat(t.size)
         loop@ for (i in t) {
+//
+//            if(!i.intOrString()){
+//                continue@loop
+//            }
 
-            if (!(i.filter { it in 'أ'..'ي' }.length == i.length)) {
+            if ((i.filter { it in 'أ'..'ي' }.length != i.length) && !i.intOrString() ) {
                 continue@loop
             }
             println(i)
@@ -104,11 +111,11 @@ class EncryptionMessageIMPL {
                 wordList.add(removeThirdCharChar(i))
 
                 charList.add(i[2].toString())
-            } else if (i in 0..9) {
-                wordList.add(i.toString())
+            } else if (i.intOrString()) {
+                wordList.add(i)
                 if (i.length > 1)
-                    charList.add("*")
-                else charList.add("-")
+                    charList.add("-")
+                else charList.add("*")
 
             } else {
 
@@ -161,6 +168,10 @@ class EncryptionMessageIMPL {
             tempWord = suggestWordList[char]!!.random()
         }
         return tempWord
+    }
+
+    companion object {
+        const val ar = "ا آ أ ب پ ت ث ج چ ح خ د ذ ر ز ژ س ش ص ض ط ظ ع غ ف ق ک گ ل م ن و ه ی ي"
     }
 
 }

@@ -1,5 +1,6 @@
 import com.m37moud.mynewlang.util.InvalidTextException
 import com.m37moud.mynewlang.util.Logger
+import com.m37moud.mynewlang.util.intOrString
 
 class TranslateMessageIMPL {
     private val originalList = mutableListOf<String>()
@@ -27,7 +28,7 @@ class TranslateMessageIMPL {
         }
 
         t.forEach { txt ->
-            if ((txt.filter { it in 'أ'..'ي' }.length == txt.length)) {
+            if ((txt.filter { it in 'أ'..'ي' }.length == txt.length) || txt.intOrString()) {
                 tt.add(txt)
             }
 
@@ -35,10 +36,15 @@ class TranslateMessageIMPL {
         println(tt.toString())
         var s = ""
 
-        repeat(tt.size) { i ->
+        var wasNum = false
+        repeat(tt.size) { i: Int ->
+
 
             if (i % 2 == 0) {
-                s = if (tt[i][0] == 'ا' && tt[i][1] == 'ل') {
+                s = if (tt[i].intOrString()) {
+                    wasNum = true
+                    tt[i]
+                } else if (tt[i][0] == 'ا' && tt[i][1] == 'ل') {
                     removeThirdCharChar(tt[i])
 
                 } else {
@@ -48,10 +54,17 @@ class TranslateMessageIMPL {
                 originalList.add(s)
 
             } else {
-                val firstChar = tt[i][0].toString()
+
+             val firstChar = if (!wasNum) {
+                    tt[i][0].toString()
+                }else{
+                    wasNum = false
+                    ""
+                }
 
                 secondList.add(firstChar)
             }
+
 
         }
         return getOriginalWord(originalList, secondList)
@@ -60,14 +73,13 @@ class TranslateMessageIMPL {
     private fun getOriginalWord(wordList: List<String>, charList: List<String>): List<String> {
         val list = mutableListOf<String>()
         repeat(charList.size) { i ->
-            println("word : "+wordList[i])
-            println("char : " +charList[i])
+            println("word : " + wordList[i])
+            println("char : " + charList[i])
             try {
-                val word = if (wordList[i].length <=1) {
+                val word = if (wordList[i].length <= 1) {
                     println("if size <= 1 ")
                     charList[i].plus(wordList[i])
-                }
-                else if (wordList[i][0] == 'ا' && wordList[i][1] == 'ل') {
+                } else if (wordList[i][0] == 'ا' && wordList[i][1] == 'ل') {
                     println("if true ")
                     addThirdChar(wordList[i], charList[i])
 
@@ -79,7 +91,7 @@ class TranslateMessageIMPL {
 
             } catch (e: Exception) {
                 Logger.e("TranslateMessageIMPL", e.message)
-                Logger.i("TranslateMessageIMPL","fail translate at ${wordList[i]} ")
+                Logger.i("TranslateMessageIMPL", "fail translate at ${wordList[i]} ")
             }
 
 

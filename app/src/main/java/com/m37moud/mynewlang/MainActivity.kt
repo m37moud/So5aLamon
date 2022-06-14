@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import com.flipkart.chatheads.ui.ChatHeadContainer
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -100,32 +101,8 @@ class MainActivity : AppCompatActivity() {
         launch_btn.setOnClickListener {
             startLoadingAnimation()
 
-//            Thread.sleep(3000)
-//            endLoadingAnimation()
-
-//            loadRewardedAd()
-
-
-//            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
-//
-//
-//                .setOnFinishListener {
-//
-//                    //load rewarded ADS
-//
-////                    loadRewardedAd()
-//
-//
-////                    startMyService()
-//
-//                }.doAction()
 
         }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//           startForegroundService(Intent(this, ClipboardService::class.java))
-//        } else {
-//           startService(Intent(this, ClipboardService::class.java))
-//        }
 
 
     }
@@ -299,7 +276,8 @@ class MainActivity : AppCompatActivity() {
             })
 //            super.finish()
         } else {
-            Toast.makeText(this, "Ad wasn't loaded.", Toast.LENGTH_SHORT).show()
+            Logger.e(TAG ,"Ad wasn't loaded." )
+//            Toast.makeText(this, "Ad wasn't loaded.", Toast.LENGTH_SHORT).show()
 //            super.finish()
         }
 
@@ -329,18 +307,12 @@ class MainActivity : AppCompatActivity() {
 
                     Logger.d(TAG, "(loadInterstitialAd) loadAd is fail $error ")
 
-                    Toast.makeText(
-                        this@MainActivity,
-                        "onAdFailedToLoad() with error $error",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
 
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     Logger.d(TAG, "(loadInterstitialAd) onAdLoaded is sucsess  ")
 
                     mInterstitialAd = interstitialAd
-//                    mAdIsLoading = false
 
 
                 }
@@ -384,7 +356,9 @@ class MainActivity : AppCompatActivity() {
                 }
             mInterstitialAd?.show(this)
         } else {
-            Toast.makeText(this, "Ad wasn't loaded.", Toast.LENGTH_SHORT).show()
+            Logger.e(TAG ,"Ad wasn't loaded." )
+
+//            Toast.makeText(this, "Ad wasn't loaded.", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -393,7 +367,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         if (mRewardedAd != null) {
             mRewardedAd = null
-//            changeOrientation()
 
         }
         if (mInterstitialAd != null) {
@@ -778,6 +751,28 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        itemView.img_undo.setOnClickListener {
+            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
+                .setOnFinishListener {
+                    itemView.floating_original_txt.setText("")
+                    itemView.floating_translated_txt.text = ""
+                    itemView.img_copy.visibility = View.INVISIBLE
+                }.doAction()
+
+        }
+
+        itemView.floating_original_txt.addTextChangedListener {
+            if (itemView.floating_original_txt.text.toString().isNullOrEmpty()) {
+                itemView.img_undo.visibility = View.INVISIBLE
+                itemView.img_paste.visibility = View.VISIBLE
+            } else {
+                itemView.img_undo.visibility = View.VISIBLE
+                itemView.img_paste.visibility = View.INVISIBLE
+            }
+
+
+        }
+
 
         //when translate button pressed
         itemView.floating_translate_btn.setOnClickListener {
@@ -830,11 +825,16 @@ class MainActivity : AppCompatActivity() {
 
                     doCopy(txtToCopy)
                     if (!itemView.img_paste.isVisible)
+                    {
                         itemView.img_paste.visibility = View.VISIBLE
+                        itemView.img_undo.visibility = View.INVISIBLE
+                    }
                 }.doAction()
 
 
         }
+
+
 
 
         builder.setView(itemView)
@@ -916,7 +916,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             val translateIntent = Intent(this, Translate::class.java).apply {
                 action = Constants.FLOATING_DIALOG_ACTION_END
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             startActivity(translateIntent)
             isViewCollapsed = false

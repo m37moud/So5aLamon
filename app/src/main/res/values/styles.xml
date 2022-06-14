@@ -19,8 +19,9 @@
         <item name="android:windowExitAnimation">@anim/dialog_slide_bottom</item>
     </style>
 
-    <style name="DialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
+    <style name="DialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
         <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
