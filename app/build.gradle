@@ -80,5 +80,5 @@ dependencies {
     implementation 'com.github.ShabanKamell:AppHead:0.4.0'
 
     //chat headSpringy heads//
-    implementation 'com.flipkart.springyheads:library:0.9.6'
+//    implementation 'com.flipkart.springyheads:library:0.9.6'
 }

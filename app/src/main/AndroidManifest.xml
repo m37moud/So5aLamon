@@ -19,13 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/SplashScreen">
-        <activity
-            android:name=".ui.custom.MyAlertDialog"
-            android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
-            android:taskAffinity=""
 
-            android:theme="@android:style/Theme.Material.Dialog.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
@@ -56,45 +50,13 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".ClipboardService"
-            android:process=":MyService"
-            android:enabled="true"
-            android:exported="false"
-			
-			android:excludeFromRecents="true"  
-			android:label="@string/app_name"  
-			android:roundIcon="@mipmap/ic_launcher_round"
-			android:stopWithTask="false"
-            />
-        <service
-            android:name=".FloatingWidgetService"
-            android:enabled="true"
-            android:exported="false" />
-
-        <receiver android:name=".CopyBroadcast">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".NotifyBroadcast"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":remote">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
-            </intent-filter>
-        </receiver>
-
 
 
         <meta-data
 
             android:name="com.google.android.gms.ads.APPLICATION_ID"
 
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-9331212887639574~2273583581" />
         <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <!-- original AdMob app ID: ca-app-pub-9331212887639574~2273583581 -->
 

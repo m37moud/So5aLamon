@@ -413,8 +413,4 @@ class Translate : AppCompatActivity() {
         return encryption.encryptTxt(originalTXT)
     }
 
-//    private fun translateTxt(text: String): String {
-//
-//        return translate.translateTxt(text)
-//    }
 }

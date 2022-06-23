@@ -5,13 +5,10 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.m37moud.mynewlang.data.EncryptionMessageIMPL
-import com.m37moud.mynewlang.ui.custom.MyAlertDialog
 import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Constants.Companion.ENCRYPT_ACTION
 import com.m37moud.mynewlang.util.Constants.Companion.textContainsArabic
@@ -70,6 +67,13 @@ class EncryptionMessage : AppCompatActivity() {
                 }
 
 
+            } else {
+                val translateIntent = Intent(this, Translate::class.java).apply {
+                    this.action = Constants.FLOATING_DIALOG_ACTION_START
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+                startActivity(translateIntent)
+
             }
 
         } else if (intent.action == Constants.ACTION_ENCRYPT) {
@@ -125,7 +129,7 @@ class EncryptionMessage : AppCompatActivity() {
         return encryption.encryptTxt(txt)
     }
 
-//    private fun showSnackBar(msg: String) {
+    //    private fun showSnackBar(msg: String) {
 ////        val view = this.findViewById<View>(R.id.encrypt_txt_container)
 //        Snackbar.make(
 //            android.R.id.content,
@@ -134,9 +138,9 @@ class EncryptionMessage : AppCompatActivity() {
 //        ).setAction(getString(R.string.OK)) {}
 //            .show()
 //    }
-    fun Activity.showSnackBar(msg: String){
+    fun Activity.showSnackBar(msg: String) {
         Snackbar.make(this.findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
-            .setAction("Ok"){
+            .setAction("Ok") {
             }
             .show()
     }

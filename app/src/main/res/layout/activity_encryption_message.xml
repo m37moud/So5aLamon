@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/encrypt_txt_container"
-    tools:context=".EncryptionMessage">
+    tools:context=".ui.EncryptionMessage">
     <TextView
         android:id="@+id/textCountTv"
         android:text="text count"

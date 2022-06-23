@@ -49,7 +49,6 @@
                     android:elevation="@dimen/_10sdp"
                     android:inputType="textMultiLine"
                     android:padding="@dimen/_10sdp"
-
                     android:scrollbars="vertical"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/_20ssp" />
@@ -70,22 +69,25 @@
                         android:layout_marginEnd="@dimen/_4sdp"
                         android:backgroundTint="@color/yellow"
                         android:elevation="10dp"
-                        android:text="encrypt"
+                        android:text="شفر"
+                        android:layout_weight="1"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_15sdp"
+                        android:textSize="@dimen/_20sdp"
                         android:textStyle="bold" />
+
 
                     <Button
                         android:id="@+id/floating_translate_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
-
                         android:backgroundTint="@color/yellow"
                         android:elevation="10dp"
-                        android:text="translate"
+                        android:layout_weight="1"
+
+                        android:text="ترجم"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_15sdp"
+                        android:textSize="@dimen/_20sdp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -114,7 +116,6 @@
                 android:elevation="@dimen/_10sdp"
                 android:src="@drawable/ic_undo"
                 android:visibility="gone" />
-
 
 
         </com.google.android.material.card.MaterialCardView>
@@ -161,12 +162,12 @@
                 android:id="@+id/img_copy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
+                android:layout_gravity="end"
                 android:layout_margin="@dimen/_10sdp"
-                android:visibility="gone"
                 android:backgroundTint="@android:color/transparent"
                 android:elevation="@dimen/_10sdp"
-                android:src="@drawable/ic_content_copy" />
+                android:src="@drawable/ic_content_copy"
+                android:visibility="gone" />
 
         </com.google.android.material.card.MaterialCardView>
 

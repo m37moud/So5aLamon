@@ -23,7 +23,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import com.flipkart.chatheads.ui.ChatHeadContainer
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
@@ -31,7 +30,6 @@ import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.m37moud.mynewlang.data.EncryptionMessageIMPL
-import com.m37moud.mynewlang.ui.DialogFragment
 import com.m37moud.mynewlang.ui.Translate
 import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Constants.Companion.ACTION_START_OR_RESUME_SERVICE
@@ -510,40 +508,10 @@ class MainActivity : AppCompatActivity() {
     private fun startMyService() {
 
         Logger.d(TAG, "(startMyService) called.")
+        checkUserPermissionAndShowFB()
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            checkUserPermissionAndShowFB()
-        } else {
-//        startService(
-//            Intent(this@MainActivity, ClipboardService::class.java)
-//        )
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(Intent(this, ClipboardService::class.java)
-                    .also {
-                        it.action = ACTION_START_OR_RESUME_SERVICE
-                    })
-
-            } else {
-                startService(Intent(this, ClipboardService::class.java).also {
-                    it.action = ACTION_START_OR_RESUME_SERVICE
-                })
-            }
-        }
         finish()
 
-
-//        Intent(this, ClipboardService::class.java).also {
-////            it.action = action.name
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                Logger.d(TAG,"Starting the service in >=26 Mode")
-//                startForegroundService(it)
-//                return
-//            }
-//            Logger.d(TAG,"Starting the service in < 26 Mode")
-//            startService(it)
-//        }
-//        finish()
 
 
     }
@@ -649,7 +617,6 @@ class MainActivity : AppCompatActivity() {
     private fun hideAds() {
         adView.pause()
 
-//        ad_viewOffline.visibility = View.GONE
         entered_learn_ad_container.visibility = View.GONE
     }
 
@@ -693,10 +660,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startFloatingWidgetService() {
-        startService(Intent(this@MainActivity, FloatingWidgetService::class.java))
-        finish()
-    }
 
     private fun showCustomUsingKotlinDsl() {
         AppHead.create(R.drawable.ic_happy) {
@@ -712,10 +675,6 @@ class MainActivity : AppCompatActivity() {
                 dismissOnClick(true)
                 preserveScreenLocation(true)
             }
-//            badgeView {
-//                count("100")
-//                position(BadgeView.Position.TOP_END)
-//            }
             dismissView {
                 alpha(0.5f)
                 scaleRatio(1.0)
@@ -727,157 +686,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun showFloatingDialog(action: String) {
-
-        Logger.d(TAG, "showFloatingDialog ")
-
-        var translateTXT = ""
-        val builder = AlertDialog.Builder(this)
-
-        val itemView: View =
-            LayoutInflater.from(this).inflate(R.layout.layout_floating_translate, null)
-
-
-        //get copied text if found
-        if (getCopiedTxtFromClipboard().isNotBlank()) {
-            itemView.img_paste.visibility = View.VISIBLE
-            itemView.img_paste.setOnClickListener {
-                ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
-                    .setOnFinishListener {
-                        itemView.floating_original_txt.setText(getCopiedTxtFromClipboard())
-
-                    }.doAction()
-
-            }
-        }
-
-        itemView.img_undo.setOnClickListener {
-            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
-                .setOnFinishListener {
-                    itemView.floating_original_txt.setText("")
-                    itemView.floating_translated_txt.text = ""
-                    itemView.img_copy.visibility = View.INVISIBLE
-                }.doAction()
-
-        }
-
-        itemView.floating_original_txt.addTextChangedListener {
-            if (itemView.floating_original_txt.text.toString().isNullOrEmpty()) {
-                itemView.img_undo.visibility = View.INVISIBLE
-                itemView.img_paste.visibility = View.VISIBLE
-            } else {
-                itemView.img_undo.visibility = View.VISIBLE
-                itemView.img_paste.visibility = View.INVISIBLE
-            }
-
-
-        }
-
-
-        //when translate button pressed
-        itemView.floating_translate_btn.setOnClickListener {
-            val originalTXT = itemView.floating_original_txt.text.toString()
-            if (originalTXT.isNotBlank()) {
-                try {
-                    translateTXT = translateTxt(originalTXT)
-                    itemView.floating_translated_txt.text = translateTXT
-                    itemView.img_copy.visibility = View.VISIBLE
-                } catch (e: InvalidTextException) {
-                    Toast.makeText(
-                        this,
-                        e.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                Toast.makeText(
-                    this,
-                    "لا يوجد نص للتحويل",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-        }
-
-        //when encrypt button pressed
-        itemView.floating_encrypt_btn.setOnClickListener {
-            val originalTXT = itemView.floating_original_txt.text.toString()
-            if (originalTXT.isNotBlank()) {
-                translateTXT = encryptTxt(originalTXT)
-                itemView.floating_translated_txt.text = translateTXT
-                itemView.img_copy.visibility = View.VISIBLE
-
-            } else {
-                Toast.makeText(
-                    this,
-                    "لا يوجد نص للتحويل",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-        }
-
-        itemView.img_copy.setOnClickListener {
-
-            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
-                .setOnFinishListener {
-                    val txtToCopy = itemView.floating_translated_txt.text.toString()
-
-                    doCopy(txtToCopy)
-                    if (!itemView.img_paste.isVisible)
-                    {
-                        itemView.img_paste.visibility = View.VISIBLE
-                        itemView.img_undo.visibility = View.INVISIBLE
-                    }
-                }.doAction()
-
-
-        }
-
-
-
-
-        builder.setView(itemView)
-        val translateDialog = builder.create()
-//        translateDialog.setCanceledOnTouchOutside(false)
-        translateDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        val window = translateDialog.window
-        window?.setGravity(Gravity.CENTER)
-        window?.attributes?.windowAnimations = R.style.DialogAnimation
-
-        translateDialog.setCancelable(false)
-        translateDialog.setCanceledOnTouchOutside(false)
-        itemView.okay_btn.setOnClickListener {
-            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
-                .setOnFinishListener {
-                    translateDialog.dismiss()
-
-                }.doAction()
-
-
-        }
-        when (action) {
-            Constants.FLOATING_DIALOG_ACTION_START -> {
-                translateDialog.show()
-
-
-            }
-            Constants.FLOATING_DIALOG_ACTION_END -> {
-                translateDialog.dismiss()
-//                  finishAfterTransition()
-
-            }
-        }
-        translateDialog.setOnDismissListener {
-            Logger.d(TAG, "showFloatingDialog ")
-//            sendBroadcast(Intent(Constants.ENCRYPT_ACTION).putExtra("copied", true))
-            showCustomUsingKotlinDsl()
-            finishAfterTransition()
-
-        }
-
-
-    }
 
     private fun translateTxt(originalTXT: String): String {
         val translate = TranslateMessageIMPL()
@@ -900,23 +708,13 @@ class MainActivity : AppCompatActivity() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             startActivity(translateIntent)
-//            supportFragmentManager.fragments.add(DialogFragment.newInstance("tst 1", "tst 2"))
-
-//val frag = DialogFragment.newInstance("tst 1", "tst 2")
-//            val f = supportFragmentManager.beginTransaction().add(frag,"ok").commit()
 
 
             isViewCollapsed = true
 
-//            collapsedView!!.visibility = View.GONE
-
-//            showSettingDialog()
-
-//            expandedView!!.visibility = View.VISIBLE
         } else {
             val translateIntent = Intent(this, Translate::class.java).apply {
                 action = Constants.FLOATING_DIALOG_ACTION_END
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             startActivity(translateIntent)
             isViewCollapsed = false
