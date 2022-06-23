@@ -1,19 +1,16 @@
 package com.m37moud.mynewlang
 
-import TranslateMessageIMPL
 import android.animation.Animator
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.Gravity
-import android.view.LayoutInflater
+import com.huawei.hms.ads.reward.Reward
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
@@ -21,31 +18,20 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorCompat
-import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.gms.ads.rewarded.RewardItem
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.m37moud.mynewlang.data.EncryptionMessageIMPL
+import com.huawei.hms.ads.*
+import com.huawei.hms.ads.AdListener
+import com.huawei.hms.ads.banner.BannerView
+import com.huawei.hms.ads.reward.RewardAd
+import com.huawei.hms.ads.reward.RewardAdLoadListener
+import com.huawei.hms.ads.reward.RewardAdStatusListener
 import com.m37moud.mynewlang.ui.Translate
 import com.m37moud.mynewlang.util.Constants
-import com.m37moud.mynewlang.util.Constants.Companion.ACTION_START_OR_RESUME_SERVICE
-import com.m37moud.mynewlang.util.Constants.Companion.AD_BANNER_ID
-import com.m37moud.mynewlang.util.Constants.Companion.AD_InterstitialAd_ID
-import com.m37moud.mynewlang.util.Constants.Companion.AD_REWARDEDED_ID
-import com.m37moud.mynewlang.util.InvalidTextException
 import com.m37moud.mynewlang.util.Logger
 import com.sha.apphead.AppHead
-import com.sha.apphead.BadgeView
-import com.skydoves.elasticviews.ElasticAnimation
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_floating_translate.view.*
 import kotlinx.android.synthetic.main.layout_translate_app.view.*
-import kotlinx.android.synthetic.main.layout_translate_app.view.okay_btn
-import kotlinx.android.synthetic.main.layout_translate_app.view.translated_txt
 
 
 private const val TAG = "MainActivity"
@@ -58,12 +44,14 @@ class MainActivity : AppCompatActivity() {
 
 
     //ads
-    private var mRewardedAd: RewardedAd? = null
+    private var mRewardedAd: RewardAd? = null
+    private val defaultScore = 10
+    private var score = 1
     private var mAdIsLoading: Boolean = false
     private var adLoadCalled: Boolean = false //detect first load
     private var mAdIsFailed: Boolean = false //detect if ad is failed
     private var mInterstitialAd: InterstitialAd? = null
-    private lateinit var adView: AdView   //banner ads
+    private lateinit var adView: BannerView   //banner ads
     private var bannerAdShowed = false//banner ads
     private var numOfShow = 0
 
@@ -91,7 +79,8 @@ class MainActivity : AppCompatActivity() {
 //        startForegroundService(
 //            Intent(this@MainActivity, ClipboardService::class.java)
 //        )
-        MobileAds.initialize(this@MainActivity)
+//        MobileAds.initialize(this@MainActivity)
+        HwAds.init(this@MainActivity)
         numOfShow = getStateOFRewardedAD()
         Logger.d(TAG, "(getStateOFRewardedAD) numOfShow = $numOfShow")
 
@@ -150,216 +139,281 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //videos ads
+    //videos Reward ads
+    /**
+     * Load a rewarded ad.
+     */
     private fun loadRewardedAd() {
-        Logger.d(TAG, "(loadRewardedAd) called.")
-
+        Logger.d(TAG, "(loadRewardedAd) (huawie) called.")
         try {
-            val adRequest = AdRequest.Builder().build()
 
-            RewardedAd.load(
-                this, AD_REWARDEDED_ID, adRequest,
-                object : RewardedAdLoadCallback() {
-                    override fun onAdFailedToLoad(adError: LoadAdError) {
+        if (mRewardedAd == null) {
+            mRewardedAd = RewardAd(this@MainActivity, getString(R.string.ad_id_reward))
+        }
+        val rewardAdLoadListener: RewardAdLoadListener = object : RewardAdLoadListener() {
+            override fun onRewardAdFailedToLoad(errorCode: Int) {
+                mAdIsFailed = true
 
-                        mAdIsFailed = true
-
-//                        endLoadingAnimation()
-                        Logger.e(TAG, "(loadRewardedAd) FailedToLoad . ${adError.message}")
-                        mRewardedAd = null
-                        mAdIsLoading = false
-                        val error = "domain: ${adError.domain}, code: ${adError.code}, " +
-                                "message: ${adError.message}"
-                        Logger.e(TAG, "(loadRewardedAd) FailedToLoad . $error")
-
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            "FailedToLoad with error $error",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-
-//                        startMyService()
-
-                    }
-
-                    override fun onAdLoaded(rewardedAd: RewardedAd?) {
-                        mRewardedAd = rewardedAd
-
-                        Logger.d("loadAd", "Ad was loaded.")
-
-                        //**************************
-//                        if (rewardedAd != null) {
-//                            endLoadingAnimation()
-//
-//
-//
-//
-//                        }
+                Logger.e(TAG, "(onRewardAdFailedToLoad) (huawie) FailedToLoad . ${errorCode}")
+                mRewardedAd = null
+                mAdIsLoading = false
 
 
-                        //start the service here
+            }
 
-
-                        //**************************
-
-
-                        mAdIsLoading = false
-
-                    }
-                }
-            )
+            override fun onRewardedLoaded() {
+                Logger.d(TAG, "onRewardedLoaded (huawie) Ad was loaded.")
+                mAdIsLoading = false
+            }
+        }
+        mRewardedAd!!.loadAd(AdParam.Builder().build(), rewardAdLoadListener)
         } catch (e: Exception) {
             e.printStackTrace()
-            Logger.d(TAG, "showAds : catch $e")
+            Logger.d(TAG, "loadRewardedAd (huawie) : catch $e")
         }
-
-
     }
 
-
-    //Rewarded Ad
-    private fun showRewardedAd(rewardedAd: RewardedAd?) {
-        Logger.d(TAG, "(showRewardedAd) called.")
-
-        //show ads
-        if (rewardedAd != null) {
-
-            rewardedAd.fullScreenContentCallback =
-                object : FullScreenContentCallback() {
-                    override fun onAdDismissedFullScreenContent() {
-                        Logger.d(TAG, "showRewardedAd Ad was dismissed.")
-                        // Don't forget to set the ad reference to null so you
-                        // don't show the ad a second time.
-//                        rewardedAd = null
-                        mRewardedAd = null
+//    private fun loadRewardedAd() {
+//        Logger.d(TAG, "(loadRewardedAd) called.")
+//
+//        try {
+//            val adRequest = AdRequest.Builder().build()
+//
+//            RewardedAd.load(
+//                this, getString(R.string.ad_id_reward), adRequest,
+//                object : RewardedAdLoadCallback() {
+//                    override fun onAdFailedToLoad(adError: LoadAdError) {
+//
+//                        mAdIsFailed = true
+//
+////                        endLoadingAnimation()
+//                        Logger.e(TAG, "(loadRewardedAd) FailedToLoad . ${adError.message}")
+//                        mRewardedAd = null
 //                        mAdIsLoading = false
-//                                shouldPlay = true
-//                                loadAd()
+//                        val error = "domain: ${adError.domain}, code: ${adError.code}, " +
+//                                "message: ${adError.message}"
+//                        Logger.e(TAG, "(loadRewardedAd) FailedToLoad . $error")
+//
+//
+//                    }
+//
+//                    override fun onAdLoaded(rewardedAd: RewardedAd?) {
+//                        mRewardedAd = rewardedAd
+//
+//                        Logger.d("loadAd", "Ad was loaded.")
+//
+//                        //**************************
+////                        if (rewardedAd != null) {
+////                            endLoadingAnimation()
+////
+////
+////
+////
+////                        }
+//
+//
+//                        //start the service here
+//
+//
+//                        //**************************
+//
+//
+//                        mAdIsLoading = false
+//
+//                    }
+//                }
+//            )
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            Logger.d(TAG, "showAds : catch $e")
+//        }
+//
+//
+//    }
 
 
-                        //start service (1)
-                        startMyService()
+    /**
+     * Display a rewarded ad.
+     */
+    private fun showRewardedAd(rewardedAd: RewardAd?) {
+        Logger.d(TAG, "(showRewardedAd) (huawie) called.")
 
 
-                    }
-
-                    override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-                        Logger.d(TAG, "showRewardedAd Ad failed to show.")
-                        // Don't forget to set the ad reference to null so you
-                        // don't show the ad a second time.
+        if (rewardedAd!!.isLoaded) {
+            rewardedAd!!.show(this@MainActivity, object : RewardAdStatusListener() {
+                override fun onRewardAdClosed() {
+                    Logger.d(TAG, "(showRewardedAd) onRewardAdClosed (huawie) Ad was closed.")
+                    // Don't forget to set the ad reference to null so you
+                    // don't show the ad a second time.
 //                        rewardedAd = null
-                        mRewardedAd = null
-
-                        //start service (2)
-                        startMyService()
-
-                    }
-
-                    override fun onAdShowedFullScreenContent() {
-
-                        Logger.d(TAG, "showRewardedAd Ad showed fullscreen content.")
-                        // Called when ad is dismissed.
-                        mRewardedAd = null
-//                        mAdIsLoading = true
-
-                    }
+                    mRewardedAd = null
+                    //start service (1)
+                    startMyService()
                 }
-            mRewardedAd?.show(this, OnUserEarnedRewardListener() {
 
-                fun onUserEarnedReward(rewardItem: RewardItem) {
-//                    var rewardAmount = rewardItem.getReward()
-                    var rewardType = rewardItem.type
-                    Logger.d(TAG, "User earned the reward.")
+                override fun onRewardAdFailedToShow(errorCode: Int) {
+                    Logger.d(TAG, "(showRewardedAd) onRewardAdFailedToShow (huawie) Ad failed to show.")
+                    // Don't forget to set the ad reference to null so you
+                    // don't show the ad a second time.
+//                        rewardedAd = null
+                    mRewardedAd = null
+
+                    //start service (2)
+                    startMyService()
+                }
+
+                override fun onRewardAdOpened() {
+                    Logger.d(TAG, "(showRewardedAd) onRewardAdOpened (huawie) Ad showed fullscreen content.")
+                    // Called when ad is dismissed.
+                    mRewardedAd = null
+                }
+
+                override fun onRewarded(reward: Reward) {
+                    Logger.d(TAG, "(showRewardedAd) onRewarded(huawie) User earned the reward.")
+                    // You are advised to grant a reward immediately and at the same time, check whether the reward
+                    // takes effect on the server. If no reward information is configured, grant a reward based on the
+                    // actual scenario.
+                    val addScore = if (reward.amount == 0) defaultScore else reward.amount
+                    score += addScore
+//                    setScore(score)
+//                    loadRewardAd()
                 }
             })
-//            super.finish()
-        } else {
-            Logger.e(TAG ,"Ad wasn't loaded." )
-//            Toast.makeText(this, "Ad wasn't loaded.", Toast.LENGTH_SHORT).show()
-//            super.finish()
+        }else {
+            Logger.e(TAG ," (showRewardedAd) (huawie) Ad wasn't loaded." )
         }
-
-
     }
+
+    //Rewarded Ad
+//    private fun showRewardedAd(rewardedAd: RewardedAd?) {
+//        Logger.d(TAG, "(showRewardedAd) called.")
+//
+//        //show ads
+//        if (rewardedAd != null) {
+//
+//            rewardedAd.fullScreenContentCallback =
+//                object : FullScreenContentCallback() {
+//                    override fun onAdDismissedFullScreenContent() {
+//                        Logger.d(TAG, "showRewardedAd Ad was dismissed.")
+//                        // Don't forget to set the ad reference to null so you
+//                        // don't show the ad a second time.
+////                        rewardedAd = null
+//                        mRewardedAd = null
+////                        mAdIsLoading = false
+////                                shouldPlay = true
+////                                loadAd()
+//
+//
+//                        //start service (1)
+//                        startMyService()
+//
+//
+//                    }
+//
+//                    override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+//                        Logger.d(TAG, "showRewardedAd Ad failed to show.")
+//                        // Don't forget to set the ad reference to null so you
+//                        // don't show the ad a second time.
+////                        rewardedAd = null
+//                        mRewardedAd = null
+//
+//                        //start service (2)
+//                        startMyService()
+//
+//                    }
+//
+//                    override fun onAdShowedFullScreenContent() {
+//
+//                        Logger.d(TAG, "showRewardedAd Ad showed fullscreen content.")
+//                        // Called when ad is dismissed.
+//                        mRewardedAd = null
+////                        mAdIsLoading = true
+//
+//                    }
+//                }
+//            mRewardedAd?.show(this, OnUserEarnedRewardListener() {
+//
+//                fun onUserEarnedReward(rewardItem: RewardItem) {
+////                    var rewardAmount = rewardItem.getReward()
+//                    var rewardType = rewardItem.type
+//                    Logger.d(TAG, "User earned the reward.")
+//                }
+//            })
+////            super.finish()
+//        } else {
+//            Logger.e(TAG ,"Ad wasn't loaded." )
+////            Toast.makeText(this, "Ad wasn't loaded.", Toast.LENGTH_SHORT).show()
+////            super.finish()
+//        }
+//
+//
+//    }
 
 
     //Interstitial ads
+    private var interstitialImg = false
+    private val adId: String
+        get() = if (interstitialImg) {
+            interstitialImg = false
+            getString(R.string.image_ad_id)
+        } else {
+            interstitialImg = true
+            getString(R.string.video_ad_id)
+        }
+    private val interstitiAladListener: AdListener = object : AdListener() {
+        override fun onAdLoaded() {
+            super.onAdLoaded()
+            Logger.d(TAG, "(loadInterstitialAd) (huawie) onAdLoaded is sucsess  ")
+            // Display an interstitial ad.
+//            mInterstitialAd = null
+        }
 
+        override fun onAdFailed(errorCode: Int) {
+            Logger.d(TAG, "(huawie) Ad load failed with error code: $errorCode")
+            mInterstitialAd = null
+            mAdIsFailed = true
+        }
+
+        override fun onAdClosed() {
+            super.onAdClosed()
+            Logger.d(TAG, "(huawie) onAdClosed")
+            mInterstitialAd = null
+
+            startMyService()
+        }
+
+        override fun onAdClicked() {
+            Logger.d(TAG, "(huawie)  onAdClicked")
+            super.onAdClicked()
+        }
+
+        override fun onAdOpened() {
+            Logger.d(TAG, "(huawie) onAdOpened")
+            super.onAdOpened()
+        }
+    }
     private fun loadInterstitialAd() {
-        Logger.d(TAG, "(loadInterstitialAd) called.")
+        Logger.d(TAG, "(loadInterstitialAd (huawie) ) called.")
 
-
-        val adRequest = AdRequest.Builder().build()
-
-
-        InterstitialAd.load(
-            this, AD_InterstitialAd_ID, adRequest,
-            object : InterstitialAdLoadCallback() {
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    Logger.d(TAG, "(loadInterstitialAd) loadAd is fail cause = ${adError.message} ")
-                    mInterstitialAd = null
-                    mAdIsFailed = true
-//                    mAdIsLoading = false
-                    val error = "domain: ${adError.domain}, code: ${adError.code}, " +
-                            "message: ${adError.message}"
-
-                    Logger.d(TAG, "(loadInterstitialAd) loadAd is fail $error ")
-
-                }
-
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    Logger.d(TAG, "(loadInterstitialAd) onAdLoaded is sucsess  ")
-
-                    mInterstitialAd = interstitialAd
-
-
-                }
-            }
-        )
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd!!.adId = adId
+        mInterstitialAd!!.adListener = interstitiAladListener
+        val adParam = AdParam.Builder().build()
+        mInterstitialAd!!.loadAd(adParam)
     }
 
     private fun showInterstitialAd() {
-        Logger.d(TAG, "(showRewardedAd) called.")
+        Logger.d(TAG, "(showInterstitialAd (huawie) ) called.")
 
-        //show Interstitial ads
-        if (mInterstitialAd != null) {
-            mInterstitialAd?.fullScreenContentCallback =
-                object : FullScreenContentCallback() {
-                    override fun onAdDismissedFullScreenContent() {
-                        Logger.d(TAG, "showInterstitial Ad was dismissed.")
-                        // Don't forget to set the ad reference to null so you
-                        // don't show the ad a second time.
-                        mInterstitialAd = null
-
-                        startMyService()
-
-                    }
-
-                    override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-                        Logger.d(TAG, "showInterstitial Ad failed to show.")
-                        // Don't forget to set the ad reference to null so you
-                        // don't show the ad a second time.
-                        startMyService()
-
-                        mInterstitialAd = null
-
-                    }
-
-                    override fun onAdShowedFullScreenContent() {
-                        Logger.d(TAG, "showInterstitial Ad showed fullscreen content.")
-                        // Called when ad is dismissed.
-                        mInterstitialAd = null
-
-                    }
-                }
-            mInterstitialAd?.show(this)
+        // Display an interstitial ad.
+        if (mInterstitialAd != null && mInterstitialAd!!.isLoaded) {
+            mInterstitialAd!!.show(this)
         } else {
-            Logger.e(TAG ,"Ad wasn't loaded." )
-
-//            Toast.makeText(this, "Ad wasn't loaded.", Toast.LENGTH_SHORT).show()
+            Logger.e(TAG ," (huawie) Ad wasn't loaded." )
         }
-
     }
+
+
 
 
     override fun onDestroy() {
@@ -513,7 +567,6 @@ class MainActivity : AppCompatActivity() {
         finish()
 
 
-
     }
 
     private fun choseAdToLoad(rewardedShowTime: Int) {
@@ -577,15 +630,18 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun showBannerAds() {
+        Logger.d(TAG, "(showBannerAds (huawie) ): called")
 
         try {
 
-            adView = AdView(this)
+            adView = BannerView(this@MainActivity)
             entered_learn_ad_container.addView(adView)
 
-            adView.adSize = AdSize.BANNER
-            adView.adUnitId = AD_BANNER_ID
-            val adRequest = AdRequest.Builder()
+            adView.bannerAdSize  = BannerAdSize.BANNER_SIZE_360_57
+            adView.adId = getString(R.string.banner_ad_id)
+            adView.setBannerRefresh(60)
+            adView.setBackgroundColor(Color.TRANSPARENT)
+            val adRequest = AdParam.Builder()
                 .build()
 
             adView.adListener = object : AdListener() {
@@ -595,10 +651,10 @@ class MainActivity : AppCompatActivity() {
                     bannerAdShowed = true
                 }
 
-                override fun onAdFailedToLoad(adError: LoadAdError) {
+                override fun onAdFailed(errorcode: Int) {
 //                        ad_viewOffline.visibility = View.GONE
                     entered_learn_ad_container.visibility = View.GONE
-                    Logger.d("showAds", " : catch " + adError.toString())
+//                    Logger.d("showAds", " : catch " + adError.toString())
 
                 }
             }
@@ -608,7 +664,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             entered_learn_ad_container.visibility = View.GONE
             e.printStackTrace()
-            Logger.d("showAds", " : catch " + e)
+            Logger.d(TAG, "(showBannerAds (huawie) : catch " + e)
         }
 
 
@@ -687,17 +743,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    private fun translateTxt(originalTXT: String): String {
-        val translate = TranslateMessageIMPL()
-        return translate.translateTxt(originalTXT)
-    }
-
-    private fun encryptTxt(originalTXT: String): String {
-        val encryption = EncryptionMessageIMPL()
-        return encryption.encryptTxt(originalTXT)
-    }
-
-
     private fun onFloatingDialog() {
         Logger.d(TAG, "onFloatingWidgetClick click isViewCollapsed  = ( $isViewCollapsed )")
 
@@ -723,39 +768,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getCopiedTxtFromClipboard(): String {
-        return try {
-            val clip: ClipData = mClipboardManager.primaryClip!!
-            (clip.getItemAt(0).text).toString()
-        } catch (e: Exception) {
-            Logger.d(TAG, e.message)
-            ""
-
-        }
-
-    }
-
-    private fun doCopy(textToCopy: String) {
-        try {
-
-            val clip = ClipData.newPlainText("toPaste", textToCopy)
-            mClipboardManager.setPrimaryClip(clip)
-            Toast.makeText(
-                this,
-                "تم النسخ",
-                Toast.LENGTH_SHORT
-            ).show()
-
-        } catch (e: Exception) {
-            Logger.d(TAG, e.message)
-            Toast.makeText(
-                this,
-                "some thing go wrong",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-    }
 
 
     companion object {
