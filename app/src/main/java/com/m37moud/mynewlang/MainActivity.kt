@@ -1,7 +1,6 @@
 package com.m37moud.mynewlang
 
 import android.animation.Animator
-import android.app.Activity
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
@@ -50,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     private var mAdIsLoading: Boolean = false
     private var adLoadCalled: Boolean = false //detect first load
     private var mAdIsFailed: Boolean = false //detect if ad is failed
+    private var permissionRejected: Boolean = false //detect if ad is failed
     private var mInterstitialAd: InterstitialAd? = null
     private lateinit var adView: BannerView   //banner ads
     private var bannerAdShowed = false//banner ads
@@ -173,63 +173,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    private fun loadRewardedAd() {
-//        Logger.d(TAG, "(loadRewardedAd) called.")
-//
-//        try {
-//            val adRequest = AdRequest.Builder().build()
-//
-//            RewardedAd.load(
-//                this, getString(R.string.ad_id_reward), adRequest,
-//                object : RewardedAdLoadCallback() {
-//                    override fun onAdFailedToLoad(adError: LoadAdError) {
-//
-//                        mAdIsFailed = true
-//
-////                        endLoadingAnimation()
-//                        Logger.e(TAG, "(loadRewardedAd) FailedToLoad . ${adError.message}")
-//                        mRewardedAd = null
-//                        mAdIsLoading = false
-//                        val error = "domain: ${adError.domain}, code: ${adError.code}, " +
-//                                "message: ${adError.message}"
-//                        Logger.e(TAG, "(loadRewardedAd) FailedToLoad . $error")
-//
-//
-//                    }
-//
-//                    override fun onAdLoaded(rewardedAd: RewardedAd?) {
-//                        mRewardedAd = rewardedAd
-//
-//                        Logger.d("loadAd", "Ad was loaded.")
-//
-//                        //**************************
-////                        if (rewardedAd != null) {
-////                            endLoadingAnimation()
-////
-////
-////
-////
-////                        }
-//
-//
-//                        //start the service here
-//
-//
-//                        //**************************
-//
-//
-//                        mAdIsLoading = false
-//
-//                    }
-//                }
-//            )
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Logger.d(TAG, "showAds : catch $e")
-//        }
-//
-//
-//    }
 
 
     /**
@@ -247,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                     // don't show the ad a second time.
 //                        rewardedAd = null
                     mRewardedAd = null
-                    //start service (1)
+                    //start service (1)choseAdToShow
                     startMyService()
                 }
 
@@ -446,7 +389,7 @@ class MainActivity : AppCompatActivity() {
 
                 //Add your code here for animation end
                 when {
-                    (mRewardedAd != null || mInterstitialAd != null) -> {
+                    (mRewardedAd != null || mInterstitialAd != null && permissionRejected) -> {
                         Logger.d(
                             TAG,
                             "(startLoadingAnimation) onAnimationEnd. mRewardedAd or mInterstitialAd is not null"
@@ -564,7 +507,6 @@ class MainActivity : AppCompatActivity() {
         Logger.d(TAG, "(startMyService) called.")
         checkUserPermissionAndShowFB()
 
-        finish()
 
 
     }
@@ -602,7 +544,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             Logger.d(TAG, "(choseAdToShow): will show InterstitialAd")
 
-            changeStateOFRewardedAD(numOfShow - 2)
+            changeStateOFRewardedAD(numOfShow - 1)
             showInterstitialAd()
 
         }
@@ -693,31 +635,50 @@ class MainActivity : AppCompatActivity() {
                 Uri.parse("package:$packageName")
             )
             startActivityForResult(intent, DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE)
-        } else
+        } else {
 //            startFloatingWidgetService()
             showCustomUsingKotlinDsl()
+            finish()
+
+        }
 
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == DRAW_OVER_OTHER_APP_PERMISSION_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK)
+//            if (resultCode == Activity.RESULT_OK) {
+		  if(Settings.canDrawOverlays(this)) {
 //                startFloatingWidgetService()
                 showCustomUsingKotlinDsl()
-            else
+              finish()
+
+
+          }  else {
                 Toast.makeText(
                     this,
                     resources.getString(R.string.draw_other_app_permission_denied),
                     Toast.LENGTH_SHORT
                 ).show()
+              permissionRejected()
+//              animate()
+            }
+
+
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
+    private fun permissionRejected(){
+        launch_btn.visibility = View.VISIBLE
+        loading_btn.visibility = View.GONE
+        img_logo.setImageResource(R.drawable.ic_sad)
+        permissionRejected = true
+    }
 
 
     private fun showCustomUsingKotlinDsl() {
+
         AppHead.create(R.drawable.ic_happy) {
             headView {
 
@@ -739,6 +700,7 @@ class MainActivity : AppCompatActivity() {
                 setupImage { }
             }
         }.show(this)
+
     }
 
 
