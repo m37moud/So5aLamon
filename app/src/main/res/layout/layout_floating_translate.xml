@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layoutDirection="ltr"
     android:padding="@dimen/_10sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,6 +14,7 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:gravity="center"
+
         android:padding="@dimen/_10sdp"
 
         >
@@ -24,6 +26,7 @@
             android:layout_gravity="top"
             android:layout_margin="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_18sdp"
+
             android:backgroundTint="@color/orange"
             app:cardCornerRadius="10dp"
 
@@ -39,18 +42,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
+
                 android:orientation="vertical">
+
 
                 <EditText
                     android:id="@+id/floating_original_txt"
                     style="@style/text_views"
-                    android:layout_width="@dimen/_230sdp"
-                    android:layout_height="@dimen/_150sdp"
-                    android:elevation="@dimen/_10sdp"
-                    android:inputType="textMultiLine"
-                    android:padding="@dimen/_10sdp"
+                    android:layout_width="@dimen/_185sdp"
+                    android:layout_height="@dimen/_130sdp"
+                    android:ellipsize="end"
+                    android:padding="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_40sdp"
                     android:scrollbars="vertical"
-                    android:textColorHint="@color/white"
+                    android:textColorHint="@color/darkorange"
+                    android:textCursorDrawable="@color/white"
                     android:textSize="@dimen/_20ssp" />
 
                 <LinearLayout
@@ -59,64 +66,75 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:gravity="center"
+                    android:layout_margin="@dimen/_5sdp"
                     android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/floating_encrypt_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_marginEnd="@dimen/_4sdp"
-                        android:backgroundTint="@color/yellow"
-                        android:elevation="10dp"
-                        android:text="شفر"
-                        android:layout_weight="1"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_20sdp"
-                        android:textStyle="bold" />
-
 
                     <Button
                         android:id="@+id/floating_translate_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:backgroundTint="@color/yellow"
-                        android:elevation="10dp"
+                        android:layout_gravity="start"
                         android:layout_weight="1"
+                        android:elevation="@dimen/_10sdp"
 
+                        android:layout_marginBottom="@dimen/_2sdp"
+                        android:background="@android:color/transparent"
                         android:text="ترجم"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_20sdp"
                         android:textStyle="bold" />
 
+
+                    <Button
+                        android:id="@+id/floating_encrypt_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:elevation="@dimen/_10sdp"
+
+                        android:text="شفر"
+                        android:layout_marginBottom="@dimen/_2sdp"
+
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_20sdp"
+                        android:textStyle="bold" />
+
+
                 </LinearLayout>
 
-            </LinearLayout>
 
+            </LinearLayout>
 
             <ImageButton
                 android:id="@+id/img_paste"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_gravity="start"
+                android:layout_margin="@dimen/_5sdp"
                 android:backgroundTint="@android:color/transparent"
+
                 android:elevation="@dimen/_10sdp"
+                android:visibility="gone"
                 android:src="@drawable/ic_content_paste"
-                android:visibility="gone" />
+
+                />
 
             <ImageButton
                 android:id="@+id/img_undo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_gravity="start"
+                android:layout_margin="@dimen/_5sdp"
                 android:backgroundTint="@android:color/transparent"
                 android:elevation="@dimen/_10sdp"
-                android:src="@drawable/ic_undo"
-                android:visibility="gone" />
+                android:visibility="gone"
 
+                android:src="@drawable/ic_undo"
+
+                />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -151,8 +169,11 @@
                     style="@style/text_views"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="@dimen/_10sdp"
-                    android:padding="@dimen/_10sdp"
+                    android:textDirection="rtl"
+                    android:padding="@dimen/_5sdp"
+
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_40sdp"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/_20ssp" />
 
@@ -162,8 +183,8 @@
                 android:id="@+id/img_copy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_gravity="start"
+                android:layout_margin="@dimen/_5sdp"
                 android:backgroundTint="@android:color/transparent"
                 android:elevation="@dimen/_10sdp"
                 android:src="@drawable/ic_content_copy"

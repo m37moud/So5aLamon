@@ -9,15 +9,6 @@
 
     tools:context=".MainActivity">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/_5sdp"
-        android:elevation="@dimen/_10sdp"
-        app:cardCornerRadius="10dp"
-        app:strokeColor="@color/darkorange"
-        app:strokeWidth="@dimen/_1sdp">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -124,7 +115,6 @@
         </FrameLayout>
 
 
-    </com.google.android.material.card.MaterialCardView>
 
 
 </LinearLayout>

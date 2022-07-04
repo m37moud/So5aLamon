@@ -88,4 +88,5 @@ dependencies {
     implementation 'com.huawei.hms:ads-lite:13.4.54.300'
     implementation 'com.huawei.hms:ads-consent:3.4.54.300'
     implementation 'com.huawei.agconnect:agconnect-core:1.7.0.300'
+    implementation 'com.huawei.hms:ads-identifier:3.4.34.301'
 }

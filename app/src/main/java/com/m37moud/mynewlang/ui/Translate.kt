@@ -40,9 +40,7 @@ class Translate : AppCompatActivity() {
     private lateinit var translate: TranslateMessageIMPL
     private var isViewCollapsed = false
 
-    private val mClipboardManager: ClipboardManager by lazy {
-        getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-    }
+    private var mClipboardManager: ClipboardManager? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,7 +118,10 @@ class Translate : AppCompatActivity() {
             itemView.img_paste.setOnClickListener {
                 ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
                     .setOnFinishListener {
+                        Logger.d(TAG, "showFloatingDialog copy button is clicked")
+
                         itemView.floating_original_txt.setText(getCopiedTxtFromClipboard())
+						itemView.floating_original_txt.setSelection(itemView.floating_original_txt.length())//placing cursor at the end of the text
 
                     }.doAction()
 
@@ -200,8 +201,7 @@ class Translate : AppCompatActivity() {
                     val txtToCopy = itemView.floating_translated_txt.text.toString()
 
                     doCopy(txtToCopy)
-                    if (!itemView.img_paste.isVisible)
-                    {
+                    if (!itemView.img_paste.isVisible) {
                         itemView.img_paste.visibility = View.VISIBLE
                         itemView.img_undo.visibility = View.INVISIBLE
                     }
@@ -240,7 +240,7 @@ class Translate : AppCompatActivity() {
             }
             FLOATING_DIALOG_ACTION_END -> {
                 translateDialog.dismiss()
-                  finishAfterTransition()
+                finishAfterTransition()
 
             }
         }
@@ -277,11 +277,11 @@ class Translate : AppCompatActivity() {
             dismissView {
                 alpha(0.5f)
                 scaleRatio(1.0)
-                drawableRes(R.drawable.ic_close_black)
+                drawableRes(R.drawable.ic_close_orange)
                 onFinishInflate { Logger.d(TAG, "onFinishDismissViewInflate") }
                 setupImage { }
             }
-        }.show(this )
+        }.show(this)
     }
 
     private fun onFloatingDialog() {
@@ -315,7 +315,12 @@ class Translate : AppCompatActivity() {
 
     private fun getCopiedTxtFromClipboard(): String {
         return try {
-            val clip: ClipData = mClipboardManager.primaryClip!!
+            if (mClipboardManager == null) {
+
+                mClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+
+            }
+            val clip: ClipData = mClipboardManager?.primaryClip!!
             (clip.getItemAt(0).text).toString()
         } catch (e: Exception) {
             Logger.d(TAG, e.message)
@@ -327,9 +332,13 @@ class Translate : AppCompatActivity() {
 
     private fun doCopy(textToCopy: String) {
         try {
+            if (mClipboardManager == null) {
 
+                mClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+
+            }
             val clip = ClipData.newPlainText("toPaste", textToCopy)
-            mClipboardManager.setPrimaryClip(clip)
+            mClipboardManager?.setPrimaryClip(clip)
             Toast.makeText(
                 this,
                 "تم النسخ",
