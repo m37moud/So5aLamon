@@ -66,24 +66,9 @@ class Translate : AppCompatActivity() {
 
             }
             else -> {
-                if (!encryptTXT.isNullOrBlank()) {
-
-                    try {
-                        translate = TranslateMessageIMPL()
-                        translateTXT = translateTxt(encryptTXT)
-                        if (!translateTXT.isNullOrBlank()) {
-                            showSettingDialog(encryptTXT, translateTXT)
-                        }
-
-                    } catch (e: InvalidTextException) {
-                        Toast.makeText(this@Translate, e.message, Toast.LENGTH_SHORT).show()
-                        sendBroadcast(Intent(Constants.ENCRYPT_ACTION).putExtra("copied", true))
-                        finish()
-
-                    }
+                Toast.makeText(this@Translate, "some thing go wrong", Toast.LENGTH_SHORT).show()
 
 
-                }
             }
         }
 
@@ -91,10 +76,6 @@ class Translate : AppCompatActivity() {
     }
 
 
-    override fun onStop() {
-        super.onStop()
-//        unregisterReceiver(notifyBroadcast)
-    }
 
     override fun onBackPressed() {
         Toast.makeText(this@Translate, "اضغط حسنا للقفل", Toast.LENGTH_SHORT).show()
@@ -121,7 +102,7 @@ class Translate : AppCompatActivity() {
                         Logger.d(TAG, "showFloatingDialog copy button is clicked")
 
                         itemView.floating_original_txt.setText(getCopiedTxtFromClipboard())
-						itemView.floating_original_txt.setSelection(itemView.floating_original_txt.length())//placing cursor at the end of the text
+                        itemView.floating_original_txt.setSelection(itemView.floating_original_txt.length())//placing cursor at the end of the text
 
                     }.doAction()
 
@@ -153,44 +134,65 @@ class Translate : AppCompatActivity() {
 
         //when translate button pressed
         itemView.floating_translate_btn.setOnClickListener {
-            val originalTXT = itemView.floating_original_txt.text.toString()
-            if (originalTXT.isNotBlank()) {
-                try {
-                    translateTXT = translateTxt(originalTXT)
-                    itemView.floating_translated_txt.text = translateTXT
-                    itemView.img_copy.visibility = View.VISIBLE
-                } catch (e: InvalidTextException) {
-                    Toast.makeText(
-                        this,
-                        e.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                Toast.makeText(
-                    this,
-                    "لا يوجد نص للتحويل",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
+                .setOnFinishListener {
+                    val originalTXT = itemView.floating_original_txt.text.toString()
+                    if (originalTXT.isNotBlank()) {
+                        if (!Constants.textContainsArabic(originalTXT)) {
+                            Toast.makeText(this, "عربى بس", Toast.LENGTH_SHORT).show()
+
+                        } else {
+                            try {
+                                translateTXT = translateTxt(originalTXT)
+                                itemView.floating_translated_txt.text = translateTXT
+                                itemView.img_copy.visibility = View.VISIBLE
+                            } catch (e: InvalidTextException) {
+                                Toast.makeText(
+                                    this,
+                                    e.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "لا يوجد نص للتحويل",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }.doAction()
+
+
 
         }
 
         //when encrypt button pressed
         itemView.floating_encrypt_btn.setOnClickListener {
-            val originalTXT = itemView.floating_original_txt.text.toString()
-            if (originalTXT.isNotBlank()) {
-                translateTXT = encryptTxt(originalTXT)
-                itemView.floating_translated_txt.text = translateTXT
-                itemView.img_copy.visibility = View.VISIBLE
+            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
+                .setOnFinishListener {
+                    val originalTXT = itemView.floating_original_txt.text.toString()
+                    if (originalTXT.isNotBlank()) {
+                        if (!Constants.textContainsArabic(originalTXT)) {
+                            Toast.makeText(this, "عربى بس", Toast.LENGTH_SHORT).show()
 
-            } else {
-                Toast.makeText(
-                    this,
-                    "لا يوجد نص للتحويل",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+                        }else{
+                            translateTXT = encryptTxt(originalTXT)
+                            itemView.floating_translated_txt.text = translateTXT
+                            itemView.img_copy.visibility = View.VISIBLE
+                        }
+
+
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "لا يوجد نص للتحويل",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }.doAction()
+
 
         }
 
@@ -354,63 +356,6 @@ class Translate : AppCompatActivity() {
         }
 
     }
-
-    private fun showSettingDialog(encryptTXT: String, translateTXT: String) {
-        Logger.d(TAG, "showSettingDialog ")
-
-        val builder = AlertDialog.Builder(this)
-
-        val itemView: View = LayoutInflater.from(this).inflate(R.layout.layout_translate_app, null)
-
-        itemView.encrypt_txt.text = encryptTXT
-        itemView.translated_txt.text = translateTXT
-        Logger.d(TAG, "(showSettingDialog) will set this $translateTXT")
-
-
-//
-//        val popUp = PopupWindow(
-//            itemView, LinearLayout.LayoutParams.WRAP_CONTENT,
-//            LinearLayout.LayoutParams.WRAP_CONTENT, false
-//        )
-//        popUp.isTouchable = true
-//        popUp.isFocusable = true
-//        popUp.isOutsideTouchable = true
-//        popUp.showAsDropDown(img_main_setting)
-
-        builder.setView(itemView)
-        val translateDialog = builder.create()
-//        translateDialog.setCanceledOnTouchOutside(false)
-        translateDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        val window = translateDialog.window
-        window?.setGravity(Gravity.CENTER)
-        window?.attributes?.windowAnimations = R.style.DialogAnimation
-
-        translateDialog.setCancelable(false)
-        translateDialog.setCanceledOnTouchOutside(false)
-        itemView.okay_btn.setOnClickListener {
-            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
-                .setOnFinishListener {
-                    translateDialog.dismiss()
-                    finishAfterTransition()
-
-                }.doAction()
-
-
-        }
-
-
-
-        translateDialog.show()
-        translateDialog.setOnDismissListener {
-            Logger.d(TAG, "showSettingDialog ")
-            sendBroadcast(Intent(Constants.ENCRYPT_ACTION).putExtra("copied", true))
-
-            finishAfterTransition()
-        }
-
-
-    }
-
 
     private fun translateTxt(originalTXT: String): String {
         val translate = TranslateMessageIMPL()

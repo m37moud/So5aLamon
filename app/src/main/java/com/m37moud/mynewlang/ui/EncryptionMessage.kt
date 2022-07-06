@@ -84,8 +84,6 @@ class EncryptionMessage : AppCompatActivity() {
 
             if (!textContainsArabic(selectedText)) {
                 Toast.makeText(this, "عربى بس", Toast.LENGTH_SHORT).show()
-                sendBroadcast(Intent(ENCRYPT_ACTION).putExtra("copied", true))
-
                 finish()
 
             } else {
@@ -101,22 +99,6 @@ class EncryptionMessage : AppCompatActivity() {
 
                 Toast.makeText(this, "اضغط لصق لوضع النص الجديد بعد التغير", Toast.LENGTH_LONG)
                     .show()
-
-                // assume the service is started, and already registered the receiver
-                sendBroadcast(Intent(ENCRYPT_ACTION).putExtra("copied", true))
-//            showSnackBar("اضغط لصق لوضع النص الجديد بعد التغير")
-//                AlertsDialogue(applicationContext, "title", "message")
-//                Intent(this, MyAlertDialog::class.java).apply {
-//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                    this@EncryptionMessage.startActivity(this)
-//                }
-//
-//            Snackbar.make(
-//                view,
-//                msg,
-//                Snackbar.LENGTH_LONG
-//            ).setAction(getString(R.string.OK)) {}
-//                .show()
                 finish()
 
             }
@@ -127,21 +109,5 @@ class EncryptionMessage : AppCompatActivity() {
 
     private fun encryptTxt(txt: String): String {
         return encryption.encryptTxt(txt)
-    }
-
-    //    private fun showSnackBar(msg: String) {
-////        val view = this.findViewById<View>(R.id.encrypt_txt_container)
-//        Snackbar.make(
-//            android.R.id.content,
-//            msg,
-//            Snackbar.LENGTH_LONG
-//        ).setAction(getString(R.string.OK)) {}
-//            .show()
-//    }
-    fun Activity.showSnackBar(msg: String) {
-        Snackbar.make(this.findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
-            .setAction("Ok") {
-            }
-            .show()
     }
 }

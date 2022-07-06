@@ -653,11 +653,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
     //for moving button
     private fun checkUserPermissionAndShowFB() {
         Logger.d(TAG, "(checkUserPermissionAndShowFB) called.")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+
+
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:$packageName")
@@ -689,7 +692,6 @@ class MainActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
                 permissionRejected()
-//              animate()
             }
 
 
@@ -698,15 +700,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun permissionRejected() {
+        Logger.d(TAG, "(permissionRejected) called.")
+
         launch_btn.visibility = View.VISIBLE
         loading_btn.visibility = View.GONE
+        txt_v1.visibility = View.GONE
+        txt_v2.text = "لابد من الموافقة باعطاء الاذن"
         img_logo.setImageResource(R.drawable.ic_sad)
         permissionRejected = true
     }
 
 
     private fun showCustomUsingKotlinDsl() {
+        Logger.d(TAG, "(showCustomUsingKotlinDsl) called.")
+
         super.finish()
         AppHead.create(R.drawable.ic_happy) {
             headView {
@@ -724,7 +733,7 @@ class MainActivity : AppCompatActivity() {
             dismissView {
                 alpha(0.5f)
                 scaleRatio(1.0)
-                drawableRes(R.drawable.ic_close_black)
+                drawableRes(R.drawable.ic_close_orange)
                 onFinishInflate { Logger.d(TAG, "onFinishDismissViewInflate") }
                 setupImage { }
             }

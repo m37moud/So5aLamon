@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_gravity="center"
     android:layoutDirection="ltr"
     android:padding="@dimen/_10sdp">
 
@@ -117,7 +118,7 @@
                 android:backgroundTint="@android:color/transparent"
 
                 android:elevation="@dimen/_10sdp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:src="@drawable/ic_content_paste"
 
                 />
@@ -188,7 +189,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:elevation="@dimen/_10sdp"
                 android:src="@drawable/ic_content_copy"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
         </com.google.android.material.card.MaterialCardView>
 
