@@ -102,7 +102,7 @@
 
 
             <FrameLayout
-                android:id="@+id/entered_learn_ad_container"
+                android:id="@+id/main_ad_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"

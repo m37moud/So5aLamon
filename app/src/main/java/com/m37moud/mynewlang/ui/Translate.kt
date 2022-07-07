@@ -1,20 +1,23 @@
 package com.m37moud.mynewlang.ui
 
 import TranslateMessageIMPL
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import android.widget.LinearLayout
-import android.widget.PopupWindow
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.FragmentActivity
+import com.huawei.hms.ads.AdListener
+import com.huawei.hms.ads.AdParam
+import com.huawei.hms.ads.BannerAdSize
+import com.huawei.hms.ads.HwAds
+import com.huawei.hms.ads.banner.BannerView
 import com.m37moud.mynewlang.R
 import com.m37moud.mynewlang.data.EncryptionMessageIMPL
 import com.m37moud.mynewlang.util.Constants
@@ -25,11 +28,9 @@ import com.m37moud.mynewlang.util.InvalidTextException
 import com.m37moud.mynewlang.util.Logger
 import com.sha.apphead.AppHead
 import com.skydoves.elasticviews.ElasticAnimation
-import kotlinx.android.synthetic.main.floating_widget_layout.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_floating_translate.*
 import kotlinx.android.synthetic.main.layout_floating_translate.view.*
-import kotlinx.android.synthetic.main.layout_translate_app.view.*
-import kotlinx.android.synthetic.main.layout_translate_app.view.okay_btn
-import kotlinx.android.synthetic.main.layout_translate_app.view.translated_txt
 
 
 private const val TAG = "Translate"
@@ -42,12 +43,17 @@ class Translate : AppCompatActivity() {
 
     private var mClipboardManager: ClipboardManager? = null
 
+    private lateinit var adView: BannerView   //banner ads
+    private var bannerAdShowed = false         //banner ads
+    private var isFloatingDialogShow = false         //banner ads
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        NotificationManagerCompat.from(this).cancel(1001)
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_translate)
+        loadBannerAds()
 
         val intent = intent
 
@@ -75,7 +81,30 @@ class Translate : AppCompatActivity() {
 
     }
 
+    private fun hideAds() {
+        if (isFloatingDialogShow && this.bannerAdShowed) {
+            adView.pause()
 
+//            floating_ad_container.visibility = View.GONE
+            isFloatingDialogShow = false
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isFloatingDialogShow &&this.bannerAdShowed) hideAds()
+
+    }
+
+    override fun onDestroy() {
+
+        if (isFloatingDialogShow && this.bannerAdShowed) {
+            adView.destroy()
+//            floating_ad_container.visibility = View.GONE
+        }
+
+        super.onDestroy()
+    }
 
     override fun onBackPressed() {
         Toast.makeText(this@Translate, "اضغط حسنا للقفل", Toast.LENGTH_SHORT).show()
@@ -83,6 +112,7 @@ class Translate : AppCompatActivity() {
     }
 
     private fun showFloatingDialog(action: String) {
+        isFloatingDialogShow = true
 
         Logger.d(TAG, "showFloatingDialog ")
 
@@ -92,6 +122,8 @@ class Translate : AppCompatActivity() {
         val itemView: View =
             LayoutInflater.from(this).inflate(R.layout.layout_floating_translate, null)
 
+        // show add if loaded
+        showBannerAd(itemView.floating_ad_container)
 
         //get copied text if found
         if (getCopiedTxtFromClipboard().isNotBlank()) {
@@ -165,7 +197,6 @@ class Translate : AppCompatActivity() {
                 }.doAction()
 
 
-
         }
 
         //when encrypt button pressed
@@ -177,7 +208,7 @@ class Translate : AppCompatActivity() {
                         if (!Constants.textContainsArabic(originalTXT)) {
                             Toast.makeText(this, "عربى بس", Toast.LENGTH_SHORT).show()
 
-                        }else{
+                        } else {
                             translateTXT = encryptTxt(originalTXT)
                             itemView.floating_translated_txt.text = translateTXT
                             itemView.img_copy.visibility = View.VISIBLE
@@ -228,6 +259,7 @@ class Translate : AppCompatActivity() {
         itemView.okay_btn.setOnClickListener {
             ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
                 .setOnFinishListener {
+                    hideAds()
                     translateDialog.dismiss()
 
                 }.doAction()
@@ -241,23 +273,84 @@ class Translate : AppCompatActivity() {
 
             }
             FLOATING_DIALOG_ACTION_END -> {
+                super.finish()
+                showCustomUsingKotlinDsl()
                 translateDialog.dismiss()
-                finishAfterTransition()
 
             }
         }
         translateDialog.setOnDismissListener {
             Logger.d(TAG, "showFloatingDialog ")
 //            sendBroadcast(Intent(Constants.ENCRYPT_ACTION).putExtra("copied", true))
-            showCustomUsingKotlinDsl()
+            super.finish()
             finishAfterTransition()
+            showCustomUsingKotlinDsl()
 
         }
 
 
     }
 
+    private fun loadBannerAds() {
+        Logger.d(TAG, "(loadBannerAds (huawie) ): called")
+
+        try {
+            HwAds.init(this@Translate)
+
+            adView = BannerView(this)
+
+            adView.bannerAdSize = BannerAdSize.BANNER_SIZE_360_57
+            adView.adId = getString(R.string.banner_ad_id)
+            adView.setBannerRefresh(60)
+            adView.setBackgroundColor(Color.TRANSPARENT)
+            val adRequest = AdParam.Builder()
+                .build()
+            adView.loadAd(adRequest)
+
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Logger.d(TAG, "(showBannerAds (huawie) : catch " + e)
+        }
+
+
+    }
+
+    private fun showBannerAd(container: FrameLayout) {
+        Logger.d(TAG, "(showBannerAd (huawie) : called ")
+
+        try {
+            adView.adListener = object : AdListener() {
+                override fun onAdLoaded() {
+                    Logger.d(TAG, "(showBannerAd (huawie) : load success ")
+
+                    container.addView(adView)
+
+//                        ad_viewOffline.visibility = View.VISIBLE
+                    container.visibility = View.VISIBLE
+                    bannerAdShowed = true
+                }
+
+                override fun onAdFailed(errorcode: Int) {
+//                        ad_viewOffline.visibility = View.GONE
+                    Logger.d(TAG, "(showBannerAd (huawie) : load faild   ")
+
+                    container.visibility = View.GONE
+//                    Logger.d("showAds", " : catch " + adError.toString())
+
+                }
+            }
+        } catch (e: Exception) {
+            Logger.d(TAG, "(showBannerAds (huawie) : catch " + e)
+
+            container.visibility = View.GONE
+
+        }
+
+    }
+
     private fun showCustomUsingKotlinDsl() {
+        //load banner
         AppHead.create(R.drawable.ic_happy) {
             headView {
 

@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_gravity="center"
     android:layoutDirection="ltr"
+    android:orientation="vertical"
     android:padding="@dimen/_10sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,9 +15,7 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:gravity="center"
-
         android:padding="@dimen/_10sdp"
-
         >
 
         <com.google.android.material.card.MaterialCardView
@@ -27,11 +25,10 @@
             android:layout_gravity="top"
             android:layout_margin="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_18sdp"
-
             android:backgroundTint="@color/orange"
             app:cardCornerRadius="10dp"
 
-            app:layout_constraintBottom_toTopOf="@+id/setting_container_share"
+            app:layout_constraintBottom_toTopOf="@+id/result_txt_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,12 +49,13 @@
                     style="@style/text_views"
                     android:layout_width="@dimen/_185sdp"
                     android:layout_height="@dimen/_130sdp"
-                    android:ellipsize="end"
-                    android:padding="@dimen/_5sdp"
-                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginStart="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:ellipsize="end"
+                    android:hint="اكتب شيئا..."
+                    android:padding="@dimen/_5sdp"
                     android:scrollbars="vertical"
-                    android:textColorHint="@color/darkorange"
+                    android:textColorHint="@color/mediumGray"
                     android:textCursorDrawable="@color/white"
                     android:textSize="@dimen/_20ssp" />
 
@@ -65,9 +63,9 @@
                     android:id="@+id/chose_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
                     android:background="@android:color/transparent"
                     android:gravity="center"
-                    android:layout_margin="@dimen/_5sdp"
                     android:orientation="horizontal">
 
                     <Button
@@ -75,11 +73,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:elevation="@dimen/_10sdp"
-
                         android:layout_marginBottom="@dimen/_2sdp"
+                        android:layout_weight="1"
+
                         android:background="@android:color/transparent"
+                        android:elevation="@dimen/_10sdp"
                         android:text="ترجم"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_20sdp"
@@ -92,12 +90,12 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_marginEnd="@dimen/_4sdp"
+                        android:layout_marginBottom="@dimen/_2sdp"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
-                        android:elevation="@dimen/_10sdp"
 
+                        android:elevation="@dimen/_10sdp"
                         android:text="شفر"
-                        android:layout_marginBottom="@dimen/_2sdp"
 
                         android:textColor="@color/white"
                         android:textSize="@dimen/_20sdp"
@@ -118,8 +116,8 @@
                 android:backgroundTint="@android:color/transparent"
 
                 android:elevation="@dimen/_10sdp"
-                android:visibility="visible"
                 android:src="@drawable/ic_content_paste"
+                android:visibility="visible"
 
                 />
 
@@ -131,9 +129,9 @@
                 android:layout_margin="@dimen/_5sdp"
                 android:backgroundTint="@android:color/transparent"
                 android:elevation="@dimen/_10sdp"
-                android:visibility="gone"
-
                 android:src="@drawable/ic_undo"
+
+                android:visibility="gone"
 
                 />
 
@@ -141,19 +139,14 @@
 
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/setting_container_share"
-
+            android:id="@+id/result_txt_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginEnd="@dimen/_8sdp"
-            android:layout_marginBottom="@dimen/_8sdp"
             android:backgroundTint="@color/yellow"
+            android:layout_marginTop="@dimen/_6sdp"
             app:cardCornerRadius="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/setting_container_donate"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/original_txt_container"
+            app:layout_constraintStart_toStartOf="@+id/original_txt_container"
             app:layout_constraintTop_toBottomOf="@+id/original_txt_container"
             app:strokeColor="@color/darkorange"
             app:strokeWidth="3dp">
@@ -170,12 +163,12 @@
                     style="@style/text_views"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textDirection="rtl"
-                    android:padding="@dimen/_5sdp"
-
-                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginStart="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+
+                    android:padding="@dimen/_5sdp"
                     android:textColorHint="@color/white"
+                    android:textDirection="rtl"
                     android:textSize="@dimen/_20ssp" />
 
             </ScrollView>
@@ -193,18 +186,28 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/setting_container_donate"
+        <FrameLayout
+            android:id="@+id/floating_ad_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
+            app:layout_constraintBottom_toTopOf="@+id/floating_okay_container"
+            app:layout_constraintEnd_toEndOf="@+id/result_txt_container"
+            app:layout_constraintStart_toStartOf="@+id/result_txt_container"
+            app:layout_constraintTop_toBottomOf="@+id/result_txt_container">
 
+        </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/floating_okay_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:backgroundTint="@color/yellow"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setting_container_share"
+            app:layout_constraintEnd_toEndOf="@+id/result_txt_container"
+            app:layout_constraintStart_toStartOf="@+id/result_txt_container"
             app:strokeColor="@color/darkorange"
             app:strokeWidth="3dp">
 

@@ -17,7 +17,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorCompat
-import com.google.android.gms.ads.*
 import com.huawei.hms.ads.*
 import com.huawei.hms.ads.AdListener
 import com.huawei.hms.ads.banner.BannerView
@@ -30,7 +29,6 @@ import com.m37moud.mynewlang.util.Logger
 import com.sha.apphead.AppHead
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_floating_translate.view.*
-import kotlinx.android.synthetic.main.layout_translate_app.view.*
 
 
 private const val TAG = "MainActivity"
@@ -43,7 +41,6 @@ class MainActivity : AppCompatActivity() {
 
 
     //ads
-    private var mRewardedAd: RewardAd? = null
     private val defaultScore = 10
     private var score = 1
     private var mAdIsLoading: Boolean = false
@@ -62,9 +59,6 @@ class MainActivity : AppCompatActivity() {
 
     //cliboard
 
-    private val mClipboardManager: ClipboardManager by lazy {
-        getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -74,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        Logger.d(TAG, "onCreate service start")
+        Logger.d(TAG, "onCreate huawie  start")
         HwAds.init(this@MainActivity)
         numOfShow = getStateOFRewardedAD()
         Logger.d(TAG, "(getStateOFRewardedAD) numOfShow = $numOfShow")
@@ -134,169 +128,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //videos Reward ads
-    /**
-     * Load a rewarded ad.
-     */
-    private fun loadRewardedAd() {
-        Logger.d(TAG, "(loadRewardedAd) (huawie) called.")
-        try {
-
-            if (mRewardedAd == null) {
-                mRewardedAd = RewardAd(this@MainActivity, getString(R.string.ad_id_reward))
-            }
-            val rewardAdLoadListener: RewardAdLoadListener = object : RewardAdLoadListener() {
-                override fun onRewardAdFailedToLoad(errorCode: Int) {
-                    mAdIsFailed = true
-
-                    Logger.e(TAG, "(onRewardAdFailedToLoad) (huawie) FailedToLoad . ${errorCode}")
-                    mRewardedAd = null
-                    mAdIsLoading = false
 
 
-                }
-
-                override fun onRewardedLoaded() {
-                    Logger.d(TAG, "onRewardedLoaded (huawie) Ad was loaded.")
-                    mAdIsLoading = true
-                }
-            }
-            mRewardedAd!!.loadAd(AdParam.Builder().build(), rewardAdLoadListener)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Logger.d(TAG, "loadRewardedAd (huawie) : catch $e")
-        }
-    }
-
-
-    /**
-     * Display a rewarded ad.
-     */
-    private fun showRewardedAd(rewardedAd: RewardAd?) {
-        Logger.d(TAG, "(showRewardedAd) (huawie) called.")
-
-
-        if (rewardedAd!!.isLoaded) {
-            rewardedAd!!.show(this@MainActivity, object : RewardAdStatusListener() {
-                override fun onRewardAdClosed() {
-                    Logger.d(TAG, "(showRewardedAd) onRewardAdClosed (huawie) Ad was closed.")
-                    // Don't forget to set the ad reference to null so you
-                    // don't show the ad a second time.
-//                        rewardedAd = null
-                    mRewardedAd = null
-                    //start service (1)choseAdToShow
-                    startMyService()
-                }
-
-                override fun onRewardAdFailedToShow(errorCode: Int) {
-                    Logger.d(
-                        TAG,
-                        "(showRewardedAd) onRewardAdFailedToShow (huawie) Ad failed to show."
-                    )
-                    // Don't forget to set the ad reference to null so you
-                    // don't show the ad a second time.
-//                        rewardedAd = null
-                    mRewardedAd = null
-                    mAdIsLoading = true
-
-                    //start service (2)
-                    startMyService()
-                }
-
-                override fun onRewardAdOpened() {
-                    Logger.d(
-                        TAG,
-                        "(showRewardedAd) onRewardAdOpened (huawie) Ad showed fullscreen content."
-                    )
-                    // Called when ad is dismissed.
-                    mRewardedAd = null
-                }
-
-                override fun onRewarded(reward: Reward) {
-                    Logger.d(TAG, "(showRewardedAd) onRewarded(huawie) User earned the reward.")
-                    // You are advised to grant a reward immediately and at the same time, check whether the reward
-                    // takes effect on the server. If no reward information is configured, grant a reward based on the
-                    // actual scenario.
-                    val addScore = if (reward.amount == 0) defaultScore else reward.amount
-                    score += addScore
-//                    setScore(score)
-//                    loadRewardAd()
-                }
-            })
-        } else {
-            Logger.e(TAG, " (showRewardedAd) (huawie) Ad wasn't loaded.")
-            mRewardedAd = null
-            mAdIsFailed = true
-        }
-    }
-
-    //Rewarded Ad
-//    private fun showRewardedAd(rewardedAd: RewardedAd?) {
-//        Logger.d(TAG, "(showRewardedAd) called.")
-//
-//        //show ads
-//        if (rewardedAd != null) {
-//
-//            rewardedAd.fullScreenContentCallback =
-//                object : FullScreenContentCallback() {
-//                    override fun onAdDismissedFullScreenContent() {
-//                        Logger.d(TAG, "showRewardedAd Ad was dismissed.")
-//                        // Don't forget to set the ad reference to null so you
-//                        // don't show the ad a second time.
-////                        rewardedAd = null
-//                        mRewardedAd = null
-////                        mAdIsLoading = false
-////                                shouldPlay = true
-////                                loadAd()
-//
-//
-//                        //start service (1)
-//                        startMyService()
-//
-//
-//                    }
-//
-//                    override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-//                        Logger.d(TAG, "showRewardedAd Ad failed to show.")
-//                        // Don't forget to set the ad reference to null so you
-//                        // don't show the ad a second time.
-////                        rewardedAd = null
-//                        mRewardedAd = null
-//
-//                        //start service (2)
-//                        startMyService()
-//
-//                    }
-//
-//                    override fun onAdShowedFullScreenContent() {
-//
-//                        Logger.d(TAG, "showRewardedAd Ad showed fullscreen content.")
-//                        // Called when ad is dismissed.
-//                        mRewardedAd = null
-////                        mAdIsLoading = true
-//
-//                    }
-//                }
-//            mRewardedAd?.show(this, OnUserEarnedRewardListener() {
-//
-//                fun onUserEarnedReward(rewardItem: RewardItem) {
-////                    var rewardAmount = rewardItem.getReward()
-//                    var rewardType = rewardItem.type
-//                    Logger.d(TAG, "User earned the reward.")
-//                }
-//            })
-////            super.finish()
-//        } else {
-//            Logger.e(TAG ,"Ad wasn't loaded." )
-////            Toast.makeText(this, "Ad wasn't loaded.", Toast.LENGTH_SHORT).show()
-////            super.finish()
-//        }
-//
-//
-//    }
 
     //Interstitial ads
-    private var interstitialImg = false
     private val adId: String
         get() = if (numOfShow < 1) {
             changeStateOFRewardedAD(numOfShow + 1)
@@ -369,17 +204,13 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onDestroy() {
-        if (mRewardedAd != null) {
-            mRewardedAd = null
-
-        }
         if (mInterstitialAd != null) {
             mInterstitialAd = null
         }
 
         if (this.bannerAdShowed) {
             adView.destroy()
-            entered_learn_ad_container.visibility = View.GONE
+            main_ad_container.visibility = View.GONE
         }
 
         super.onDestroy()
@@ -398,7 +229,7 @@ class MainActivity : AppCompatActivity() {
 
                 //Add your code here for animation end
                 when {
-                    (mRewardedAd != null || mInterstitialAd != null) -> {
+                    ( mInterstitialAd != null) -> {
                         Logger.d(
                             TAG,
                             "(startLoadingAnimation) onAnimationEnd. mRewardedAd or mInterstitialAd is not null"
@@ -453,22 +284,6 @@ class MainActivity : AppCompatActivity() {
         loading_btn.playAnimation()
 
 
-//        loading_btn.setMinAndMaxFrame(1,8)
-
-//        loading_btn.repeatMode = LottieDrawable.RESTART
-
-
-//        // Custom animation speed or duration.
-//        val animator = ValueAnimator.ofFloat(0f, 0.6f)
-//        animator.addUpdateListener {animation ->
-//            loading_btn.progress = animation.animatedValue as Float
-//        }
-//        if(loading_btn.progress == 0f){
-//            animator.start();
-//        }else{
-//            loading_btn.progress = 0f;
-//        }
-
     }
 
 
@@ -488,7 +303,7 @@ class MainActivity : AppCompatActivity() {
 //                loading_btn.cancelAnimation()
 //                loading_btn.repeatCount = 0
                 loading_btn.visibility = View.INVISIBLE
-                if (mRewardedAd != null || mInterstitialAd != null) {
+                if ( mInterstitialAd != null) {
                     Logger.d(TAG, "(endLoadingAnimation) onAnimationEnd. mRewardedAd or mInterstitialAd not null")
 
                     showInterstitialAd()
@@ -538,47 +353,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun choseAdToLoad(rewardedShowTime: Int) {
-
-        Logger.d(TAG, "(choseAdToLoad): called")
-        adLoadCalled = true
-
-        if (rewardedShowTime < 1) {
-            Logger.d(TAG, "(choseAdToLoad): will load RewardedAd")
-
-            loadRewardedAd()
-
-        } else {
-            Logger.d(TAG, "(choseAdToLoad): will load InterstitialAd")
-
-            loadInterstitialAd()
-
-        }
-
-
-    }
-
-//    private fun choseAdToShow(rewardedShowTime: Int) {
-//        Logger.d(TAG, "(choseAdToShow): called")
-//
-//        if (rewardedShowTime < 1) {
-//            Logger.d(TAG, "(choseAdToShow): will show RewardedAd")
-//
-//            changeStateOFRewardedAD(numOfShow + 1)
-//
-//            showRewardedAd(mRewardedAd)
-//
-//        } else {
-//            Logger.d(TAG, "(choseAdToShow): will show InterstitialAd")
-//
-//            changeStateOFRewardedAD(numOfShow - 1)
-//            showInterstitialAd()
-//
-//        }
-//
-//
-//    }
-
 
 
     private fun changeStateOFRewardedAD(rewardedShowTime: Int) {
@@ -605,7 +379,7 @@ class MainActivity : AppCompatActivity() {
         try {
 
             adView = BannerView(this@MainActivity)
-            entered_learn_ad_container.addView(adView)
+            main_ad_container.addView(adView)
 
             adView.bannerAdSize = BannerAdSize.BANNER_SIZE_360_57
             adView.adId = getString(R.string.banner_ad_id)
@@ -617,22 +391,22 @@ class MainActivity : AppCompatActivity() {
             adView.adListener = object : AdListener() {
                 override fun onAdLoaded() {
 //                        ad_viewOffline.visibility = View.VISIBLE
-                    entered_learn_ad_container.visibility = View.VISIBLE
+                    main_ad_container.visibility = View.VISIBLE
                     bannerAdShowed = true
                 }
 
                 override fun onAdFailed(errorcode: Int) {
 //                        ad_viewOffline.visibility = View.GONE
-                    entered_learn_ad_container.visibility = View.GONE
+                    main_ad_container.visibility = View.GONE
 //                    Logger.d("showAds", " : catch " + adError.toString())
 
                 }
             }
 
-            entered_learn_ad_container.visibility = View.VISIBLE
+            main_ad_container.visibility = View.VISIBLE
             adView.loadAd(adRequest)
         } catch (e: Exception) {
-            entered_learn_ad_container.visibility = View.GONE
+            main_ad_container.visibility = View.GONE
             e.printStackTrace()
             Logger.d(TAG, "(showBannerAds (huawie) : catch " + e)
         }
@@ -643,7 +417,7 @@ class MainActivity : AppCompatActivity() {
     private fun hideAds() {
         adView.pause()
 
-        entered_learn_ad_container.visibility = View.GONE
+        main_ad_container.visibility = View.GONE
     }
 
     override fun onPause() {
@@ -707,7 +481,7 @@ class MainActivity : AppCompatActivity() {
         launch_btn.visibility = View.VISIBLE
         loading_btn.visibility = View.GONE
         txt_v1.visibility = View.GONE
-        txt_v2.text = "لابد من الموافقة باعطاء الاذن"
+        txt_v2.text = "لابد من اعطاء الاذن للبرنامج لكى يعمل"
         img_logo.setImageResource(R.drawable.ic_sad)
         permissionRejected = true
     }
