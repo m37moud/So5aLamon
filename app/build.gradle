@@ -19,10 +19,24 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    signingConfigs {
+        config{
+            storeFile file('So5aLamon.jks')
+                    keyAlias 'key0'
+                    keyPassword '20102010'
+                    storePassword '20102010'
+        }
+    }
+    defaultConfig {
+        resConfigs "ar"
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+        }
         release {
-            minifyEnabled true
+            signingConfig signingConfigs.config
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -86,4 +100,5 @@ dependencies {
     implementation 'com.huawei.hms:ads-consent:3.4.54.300'
     implementation 'com.huawei.agconnect:agconnect-core:1.7.0.300'
     implementation 'com.huawei.hms:ads-identifier:3.4.34.301'
+    implementation 'com.huawei.hms:iap:5.3.0.300'
 }

@@ -92,7 +92,7 @@ class Translate : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (isFloatingDialogShow &&this.bannerAdShowed) hideAds()
+        if (isFloatingDialogShow && this.bannerAdShowed) hideAds()
 
     }
 
@@ -123,22 +123,28 @@ class Translate : AppCompatActivity() {
             LayoutInflater.from(this).inflate(R.layout.layout_floating_translate, null)
 
         // show add if loaded
+
         showBannerAd(itemView.floating_ad_container)
+        if (!adView.isLoading) {
+            loadBannerAds()
+            showBannerAd(itemView.floating_ad_container)
+        }
 
         //get copied text if found
         if (getCopiedTxtFromClipboard().isNotBlank()) {
             itemView.img_paste.visibility = View.VISIBLE
-            itemView.img_paste.setOnClickListener {
-                ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
-                    .setOnFinishListener {
-                        Logger.d(TAG, "showFloatingDialog copy button is clicked")
 
+        }
+        itemView.img_paste.setOnClickListener {
+            ElasticAnimation(it).setScaleX(0.85f).setScaleY(0.85f).setDuration(200)
+                .setOnFinishListener {
+                    Logger.d(TAG, "showFloatingDialog copy button is clicked")
+                    if (getCopiedTxtFromClipboard().isNotBlank()) {
                         itemView.floating_original_txt.setText(getCopiedTxtFromClipboard())
                         itemView.floating_original_txt.setSelection(itemView.floating_original_txt.length())//placing cursor at the end of the text
+                    }
+                }.doAction()
 
-                    }.doAction()
-
-            }
         }
 
         itemView.img_undo.setOnClickListener {
@@ -300,6 +306,7 @@ class Translate : AppCompatActivity() {
             adView = BannerView(this)
 
             adView.bannerAdSize = BannerAdSize.BANNER_SIZE_360_57
+
             adView.adId = getString(R.string.banner_ad_id)
             adView.setBannerRefresh(60)
             adView.setBackgroundColor(Color.TRANSPARENT)
@@ -310,14 +317,14 @@ class Translate : AppCompatActivity() {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Logger.d(TAG, "(showBannerAds (huawie) : catch " + e)
+            Logger.d(TAG, "(loadBannerAds (huawie) : catch " + e)
         }
 
 
     }
 
     private fun showBannerAd(container: FrameLayout) {
-        Logger.d(TAG, "(showBannerAd (huawie) : called ")
+        Logger.d(TAG, "(showBannerAd (huawie) : called ${adView.isLoading} ")
 
         try {
             adView.adListener = object : AdListener() {
@@ -333,10 +340,10 @@ class Translate : AppCompatActivity() {
 
                 override fun onAdFailed(errorcode: Int) {
 //                        ad_viewOffline.visibility = View.GONE
-                    Logger.d(TAG, "(showBannerAd (huawie) : load faild   ")
+                    Logger.d(TAG, "(showBannerAd (huawie) : load faild  $errorcode ")
 
                     container.visibility = View.GONE
-//                    Logger.d("showAds", " : catch " + adError.toString())
+                    Logger.d("showBannerAd", " : faild " + errorcode.toString())
 
                 }
             }
@@ -346,7 +353,6 @@ class Translate : AppCompatActivity() {
             container.visibility = View.GONE
 
         }
-
     }
 
     private fun showCustomUsingKotlinDsl() {
@@ -409,14 +415,29 @@ class Translate : AppCompatActivity() {
     }
 
     private fun getCopiedTxtFromClipboard(): String {
+        Logger.d(TAG, "getCopiedTxtFromClipboard method called ")
+
         return try {
             if (mClipboardManager == null) {
+                Logger.d(TAG, "getCopiedTxtFromClipboard method will init mClipboardManager ")
+
 
                 mClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
+
             }
-            val clip: ClipData = mClipboardManager?.primaryClip!!
-            (clip.getItemAt(0).text).toString()
+
+            if (!mClipboardManager?.hasPrimaryClip()!!) {
+                Logger.d(TAG, "getCopiedTxtFromClipboard method hasnt clipboard ")
+
+                ""
+            } else {
+                Logger.d(TAG, "getCopiedTxtFromClipboard method has data ")
+
+                val clip: ClipData = mClipboardManager?.primaryClip!!
+                (clip.getItemAt(0).text).toString()
+            }
+
         } catch (e: Exception) {
             Logger.d(TAG, e.message)
             ""

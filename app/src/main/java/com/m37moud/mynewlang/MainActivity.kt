@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import com.huawei.hms.ads.reward.Reward
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
@@ -20,9 +19,6 @@ import androidx.core.view.ViewPropertyAnimatorCompat
 import com.huawei.hms.ads.*
 import com.huawei.hms.ads.AdListener
 import com.huawei.hms.ads.banner.BannerView
-import com.huawei.hms.ads.reward.RewardAd
-import com.huawei.hms.ads.reward.RewardAdLoadListener
-import com.huawei.hms.ads.reward.RewardAdStatusListener
 import com.m37moud.mynewlang.ui.Translate
 import com.m37moud.mynewlang.util.Constants
 import com.m37moud.mynewlang.util.Logger

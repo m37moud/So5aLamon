@@ -56,6 +56,7 @@
                     android:padding="@dimen/_5sdp"
                     android:scrollbars="vertical"
                     android:textColorHint="@color/mediumGray"
+                    android:backgroundTint="@color/white"
                     android:textCursorDrawable="@color/white"
                     android:textSize="@dimen/_20ssp" />
 
@@ -117,7 +118,7 @@
 
                 android:elevation="@dimen/_10sdp"
                 android:src="@drawable/ic_content_paste"
-                android:visibility="visible"
+                android:visibility="gone"
 
                 />
 
@@ -142,8 +143,8 @@
             android:id="@+id/result_txt_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/yellow"
             android:layout_marginTop="@dimen/_6sdp"
+            android:backgroundTint="@color/yellow"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/original_txt_container"
             app:layout_constraintStart_toStartOf="@+id/original_txt_container"
@@ -182,7 +183,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:elevation="@dimen/_10sdp"
                 android:src="@drawable/ic_content_copy"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -195,7 +196,8 @@
             app:layout_constraintBottom_toTopOf="@+id/floating_okay_container"
             app:layout_constraintEnd_toEndOf="@+id/result_txt_container"
             app:layout_constraintStart_toStartOf="@+id/result_txt_container"
-            app:layout_constraintTop_toBottomOf="@+id/result_txt_container">
+            app:layout_constraintTop_toBottomOf="@+id/result_txt_container"
+            >
 
         </FrameLayout>
 
@@ -203,11 +205,13 @@
             android:id="@+id/floating_okay_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:backgroundTint="@color/yellow"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/result_txt_container"
             app:layout_constraintStart_toStartOf="@+id/result_txt_container"
+            app:layout_constraintTop_toBottomOf="@+id/result_txt_container"
             app:strokeColor="@color/darkorange"
             app:strokeWidth="3dp">
 

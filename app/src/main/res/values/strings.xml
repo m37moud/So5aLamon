@@ -9,17 +9,17 @@
 
 
 
-<!--    <string name="banner_ad_id" translatable="false">o93ryps4qx</string>-->
-<!--    <string name="ad_id_reward" translatable="false">testx9dtjwj8hp</string>-->
-<!--    <string name="image_ad_id" translatable="false">t5u3yb8c6v</string>-->
-<!--    <string name="video_ad_id" translatable="false">n1dsczhwuw</string>-->
-
-
-
-
-    <string name="banner_ad_id" translatable="false">testw6vs28auh3</string>
+    <string name="banner_ad_id" translatable="false">o93ryps4qx</string>
     <string name="ad_id_reward" translatable="false">testx9dtjwj8hp</string>
-    <string name="image_ad_id" translatable="false">teste9ih9j0rc3</string>
-    <string name="video_ad_id" translatable="false">testb4znbuh3n2</string>
+    <string name="image_ad_id" translatable="false">t5u3yb8c6v</string>
+    <string name="video_ad_id" translatable="false">n1dsczhwuw</string>
+
+
+
+
+<!--    <string name="banner_ad_id" translatable="false">testw6vs28auh3</string>-->
+<!--    <string name="ad_id_reward" translatable="false">testx9dtjwj8hp</string>-->
+<!--    <string name="image_ad_id" translatable="false">teste9ih9j0rc3</string>-->
+<!--    <string name="video_ad_id" translatable="false">testb4znbuh3n2</string>-->
 
 </resources>
