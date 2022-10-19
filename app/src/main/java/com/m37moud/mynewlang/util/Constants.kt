@@ -16,21 +16,12 @@ class Constants {
         const val ENCRYPRAT_TXT = "encryptTxt"
         const val ORIGINAL_TXT = "originalTxt"
 
-//test ads
-//        const val AD_REWARDEDED_ID = "ca-app-pub-3940256099942544/5224354917"
-//        const val AD_InterstitialAd_ID = "ca-app-pub-3940256099942544/1033173712"
-//        const val AD_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
+
+        const val AD_REWARDEDED_ID = "ca-app-pub-3940256099942544/5224354917"  
+        const val AD_InterstitialAd_ID = "ca-app-pub-3940256099942544/1033173712"
+        const val AD_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
 
 
-        //release
-//
-//        const val AD_REWARDEDED_ID = "ca-app-pub-9331212887639574/9669692021"
-//        const val AD_InterstitialAd_ID = "ca-app-pub-9331212887639574/8220878981"
-//        const val AD_BANNER_ID = "ca-app-pub-9331212887639574/3851261271"
-
-
-        //ca-app-pub-9331212887639574~2273583581
-        //ca-app-pub-9331212887639574~2273583581
 
         fun textContainsArabic(text: String): Boolean {
             for (charac in text.toCharArray()) {
